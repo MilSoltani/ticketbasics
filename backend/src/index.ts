@@ -4,11 +4,13 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 
 import { env } from '../env';
+import ticketHandler from './handler/ticket.handler';
 
 export const db = drizzle(env.DATABASE_URL);
 
 const app = new Hono()
-  .use('/*', cors());
+  .use('/*', cors())
+  .route('/tickets', ticketHandler);
 
 serve({
   fetch: app.fetch,
