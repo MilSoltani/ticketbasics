@@ -4,8 +4,12 @@
     "target": "ESNext",
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
+    "baseUrl": ".",
     "module": "esnext",
     "moduleResolution": "bundler",
+    "paths": {
+      "@/*": ["src/*", "*"]
+    },
     "types": [
       "node"
     ],
