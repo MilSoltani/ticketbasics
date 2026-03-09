@@ -12,8 +12,11 @@
     "node": ">=22.20.0"
   },
   "scripts": {
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "dev:backend": "cd ./backend && npm run dev",
+    "dev:frontend": "cd ./frontend && npm run dev",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "lint": "eslint backend/src frontend/src",
+    "lint:fix": "eslint backend/src frontend/src --fix"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^7.7.0",
