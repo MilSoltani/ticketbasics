@@ -1,16 +1,14 @@
 import { serve } from '@hono/node-server';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 
 import { env } from '../env';
 
 export const db = drizzle(env.DATABASE_URL);
 
-const app = new Hono();
-
-app.get('/', (c) => {
-  return c.text('Hello Hono!');
-});
+const app = new Hono()
+  .use('/*', cors());
 
 serve({
   fetch: app.fetch,
