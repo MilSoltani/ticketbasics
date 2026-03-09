@@ -1,15 +1,20 @@
-import { serve } from '@hono/node-server'
-import { Hono } from 'hono'
+import { serve } from '@hono/node-server';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { Hono } from 'hono';
 
-const app = new Hono()
+// eslint-disable-next-line node/no-process-env
+export const db = drizzle(process.env.DATABASE_URL!);
+
+const app = new Hono();
 
 app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
+  return c.text('Hello Hono!');
+});
 
 serve({
   fetch: app.fetch,
-  port: 3000
+  port: 3000,
 }, (info) => {
-  console.log(`Server on http://localhost:${info.port}`)
-})
+  // eslint-disable-next-line no-console
+  console.log(`Server on http://localhost:${info.port}`);
+});

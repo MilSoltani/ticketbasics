@@ -16,7 +16,11 @@
     "dev:frontend": "cd ./frontend && npm run dev",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "lint": "eslint backend/src frontend/src",
-    "lint:fix": "eslint backend/src frontend/src --fix"
+    "lint:fix": "eslint backend/src frontend/src --fix",
+    "generate": "cd ./backend && npx drizzle-kit generate",
+    "migrate": "cd ./backend && npx drizzle-kit migrate",
+    "push": "cd ./backend && npx drizzle-kit push",
+    "studio": "cd ./backend && npx drizzle-kit studio"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^7.7.0",
