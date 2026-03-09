@@ -1,0 +1,29 @@
+{
+  "name": "ticketbasics",
+  "type": "module",
+  "version": "0.0.1",
+  "packageManager": "pnpm@10.30.1",
+  "description": "ticket system",
+  "author": "Milad Soltani",
+  "license": "ISC",
+  "keywords": [],
+  "main": "index.js",
+  "engines": {
+    "node": ">=22.20.0"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^7.7.0",
+    "@commitlint/cli": "^20.4.3",
+    "@commitlint/config-conventional": "^20.4.3",
+    "eslint": "^10.0.2",
+    "husky": "^9.1.7",
+    "nano-staged": "^0.9.0"
+  },
+  "nano-staged": {
+    "*.{js,ts,vue,css}": "eslint --fix"
+  }
+}
