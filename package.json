@@ -20,7 +20,8 @@
     "generate": "cd ./backend && npx drizzle-kit generate",
     "migrate": "cd ./backend && npx drizzle-kit migrate",
     "push": "cd ./backend && npx drizzle-kit push",
-    "studio": "cd ./backend && npx drizzle-kit studio"
+    "studio": "cd ./backend && npx drizzle-kit studio",
+    "seed": "cd ./backend && npx tsx --env-file=.env src/database/seed.ts"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^7.7.0",
