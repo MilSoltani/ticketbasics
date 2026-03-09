@@ -1,6 +1,9 @@
 {
   "name": "@ticketbasics/backend",
   "type": "module",
+  "exports": {
+    "client": "./src/client/index.ts"
+  },
   "scripts": {
     "dev": "NODE_OPTIONS='--env-file=.env' tsx watch src/index.ts",
     "build": "tsc",
