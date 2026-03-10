@@ -2,6 +2,7 @@ import { serve } from '@hono/node-server';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { logger } from 'hono/logger';
 
 import { env } from '../env';
 import ticketHandler from './handler/ticket.handler';
@@ -10,7 +11,9 @@ export const db = drizzle(env.DATABASE_URL);
 
 const app = new Hono()
   .use('/*', cors())
-  .route('/tickets', ticketHandler);
+  .use(logger())
+  .route('/tickets', ticketHandler)
+  .route('/api/tickets', ticketHandler);
 
 serve({
   fetch: app.fetch,

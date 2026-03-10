@@ -1,1 +1,1 @@
-export * from '@/client/ticket.client';
+export * from './ticket.client';
