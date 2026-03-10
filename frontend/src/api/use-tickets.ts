@@ -38,3 +38,39 @@ export function useGetAllTickets() {
 
   return { data, isLoading, error, isFetching };
 }
+
+/**
+ * Fetches a tickets by id from the API
+ * @returns Query state including ticket data, loading and error states
+ */
+export function useGetTicketById(id: number) {
+  const { data, isLoading, error, isFetching } = useQuery({
+    queryKey: ['tickets', id],
+    queryFn: async () => {
+      try {
+        const response = await ticketsClient[':id'].$get({ param: { id: String(id) } });
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.statusText}`);
+        }
+
+        const json = await response.json();
+
+        if (Array.isArray(json.data)) {
+          throw new TypeError('Invalid response: expected single ticket');
+        }
+
+        return json.data as Ticket;
+      }
+      catch (err) {
+        throw new Error(
+          err instanceof Error ? err.message : 'Failed to fetch tickets',
+        );
+      }
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    retry: 2,
+  });
+
+  return { data, isLoading, error, isFetching };
+}
