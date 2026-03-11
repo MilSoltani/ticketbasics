@@ -1,6 +1,6 @@
-import type { Ticket } from '@ticketbasics/backend/client';
+import type { Ticket, TicketUpdatePayload } from '@ticketbasics/backend/client';
 
-import { useQuery } from '@tanstack/vue-query';
+import { useMutation, useQuery } from '@tanstack/vue-query';
 import { ticketsClient } from '@ticketbasics/backend/client';
 
 /**
@@ -73,4 +73,40 @@ export function useGetTicketById(id: number) {
   });
 
   return { data, isLoading, error, isFetching };
+}
+
+/**
+ * Updates a ticket
+ * @returns Mutation state including mutate/mutateAsync, loading and error states
+ */
+export function updateTicket() {
+  const { mutate, mutateAsync, isPending, error, reset } = useMutation({
+    mutationFn: async (data: { id: number; changes: TicketUpdatePayload }) => {
+      try {
+        const response = await ticketsClient[':id'].$put({
+          param: { id: String(data.id) },
+          json: data.changes,
+        } as any);
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.statusText}`);
+        }
+
+        const json = await response.json();
+
+        if (Array.isArray(json.data)) {
+          throw new TypeError('Invalid response: expected single ticket');
+        }
+
+        return json.data as Ticket;
+      }
+      catch (err) {
+        throw new Error(
+          err instanceof Error ? err.message : 'Failed to update ticket',
+        );
+      }
+    },
+  });
+
+  return { mutate, mutateAsync, isPending, error, reset };
 }

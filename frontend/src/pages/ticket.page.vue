@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import type { TicketUpdatePayload } from '@ticketbasics/backend/client';
 
+import { Save } from 'lucide-vue-next';
 import { ref, toRaw, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
+import Button from '@/components/ui/button/Button.vue';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -14,12 +16,14 @@ import {
 } from '@/components/ui/select';
 import Textarea from '@/components/ui/textarea/Textarea.vue';
 
-import { useGetTicketById } from '../api/use-tickets';
+import { updateTicket, useGetTicketById } from '../api/use-tickets';
 
 const route = useRoute();
 const ticketId = Number(route.params.id);
 
 const { data: ticket, isLoading, error, isFetching } = useGetTicketById(ticketId);
+
+const { mutate: updateTicketMutate } = updateTicket();
 
 const priorityList = ['low', 'medium', 'high', 'urgent'];
 const statusList = ['open', 'pending', 'working', 'resolved', 'closed'];
@@ -73,6 +77,10 @@ watch(ticket, (newTicket) => {
           </SelectItem>
         </SelectContent>
       </Select>
+
+      <Button @click="() => updateTicketMutate({ id: ticketId, changes: ticketUpdatePayload })">
+        <Save :size="16" /> Update
+      </Button>
     </div>
   </div>
 </template>
