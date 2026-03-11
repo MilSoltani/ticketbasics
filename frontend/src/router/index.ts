@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import TicketPage from '@/pages/ticket.page.vue';
-import TicketsPage from '@/pages/tickets.page.vue';
+import TicketPage from '@/pages/tickets/ticket.page.vue';
+import TicketsPage from '@/pages/tickets/tickets.page.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

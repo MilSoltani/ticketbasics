@@ -15,8 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import Textarea from '@/components/ui/textarea/Textarea.vue';
-
-import { useGetTicketById, useUpdateTicket } from '../queries/tickets.query';
+import { useGetTicketById, useUpdateTicket } from '@/queries/tickets.query';
 
 const route = useRoute();
 const ticketId = Number(route.params.id);

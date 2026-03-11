@@ -3,9 +3,7 @@ import type { TicketCreatePayload } from '@ticketbasics/backend/client';
 
 import { Plus } from 'lucide-vue-next';
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 
-import Button from '@/components/ui/button/Button.vue';
 import {
   Dialog,
   DialogClose,
@@ -24,21 +22,13 @@ import SelectItem from '@/components/ui/select/SelectItem.vue';
 import SelectTrigger from '@/components/ui/select/SelectTrigger.vue';
 import SelectValue from '@/components/ui/select/SelectValue.vue';
 import Textarea from '@/components/ui/textarea/Textarea.vue';
+import { useCreateTicket } from '@/queries/tickets.query';
 
-import Table from '../components/ui/table/Table.vue';
-import TableBody from '../components/ui/table/TableBody.vue';
-import TableCell from '../components/ui/table/TableCell.vue';
-import TableHead from '../components/ui/table/TableHead.vue';
-import TableHeader from '../components/ui/table/TableHeader.vue';
-import TableRow from '../components/ui/table/TableRow.vue';
-import { useCreateTicket, useGetAllTickets } from '../queries/tickets.query';
-
-const { data: tickets, isLoading, error, isFetching } = useGetAllTickets();
+import Button from './ui/button/Button.vue';
 
 const priorityList = ['low', 'medium', 'high', 'urgent'];
 
 const { mutate: useCreateMutate } = useCreateTicket();
-const router = useRouter();
 
 const newTicket = ref<TicketCreatePayload>({
   subject: '',
@@ -103,52 +93,4 @@ const newTicket = ref<TicketCreatePayload>({
       </DialogContent>
     </form>
   </Dialog>
-
-  <div class="mt-2">
-    <div v-if="isLoading">
-      Loading...
-    </div>
-    <div v-else-if="error">
-      {{ error }}
-    </div>
-    <div v-else-if="isFetching">
-      Fetching...
-    </div>
-
-    <Table v-else>
-      <TableHeader>
-        <TableRow>
-          <TableHead class="font-bold">
-            Id
-          </TableHead>
-          <TableHead class="font-bold">
-            Subject
-          </TableHead>
-          <TableHead class="font-bold">
-            Priority
-          </TableHead>
-          <TableHead class="font-bold">
-            Status
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <TableRow v-for="ticket in tickets" :key="ticket.id" class="cursor-pointer" @click="router.push(`/tickets/${ticket.id}`)">
-          <TableCell>#{{ ticket.id }}</TableCell>
-          <TableCell>
-            <div class="text-xl">
-              {{ ticket.subject }}
-            </div>
-            <div class="text-muted-foreground">
-              {{ ticket.createdAt }}
-            </div>
-          </TableCell>
-          <TableCell>{{ ticket.priority }}</TableCell>
-          <TableCell>{{ ticket.status }}</TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
-  </div>
 </template>
-
-<style scoped></style>
