@@ -2,7 +2,7 @@ import type { InferInsertModel } from 'drizzle-orm';
 
 import { eq } from 'drizzle-orm';
 
-import { ticketSchema, ticketsTable } from '@/database/schema';
+import { ticketCreateSchema, ticketSchema, ticketsTable } from '@/database/schema';
 import { db } from '@/index';
 
 type InsertTicket = InferInsertModel<typeof ticketsTable>;
@@ -30,8 +30,7 @@ export const TicketRepository = {
   },
 
   async create(ticket: InsertTicket) {
-    // Validate input before inserting
-    const validated = ticketSchema.parse(ticket);
+    const validated = ticketCreateSchema.parse(ticket);
 
     const [result] = await db
       .insert(ticketsTable)
