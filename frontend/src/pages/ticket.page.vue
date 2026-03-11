@@ -1,5 +1,18 @@
 <script setup lang="ts">
+import type { TicketUpdatePayload } from '@ticketbasics/backend/client';
+
+import { ref, toRaw, watch } from 'vue';
 import { useRoute } from 'vue-router';
+
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import Textarea from '@/components/ui/textarea/Textarea.vue';
 
 import { useGetTicketById } from '../api/use-tickets';
 
@@ -7,6 +20,17 @@ const route = useRoute();
 const ticketId = Number(route.params.id);
 
 const { data: ticket, isLoading, error, isFetching } = useGetTicketById(ticketId);
+
+const priorityList = ['low', 'medium', 'high', 'urgent'];
+const statusList = ['open', 'pending', 'working', 'resolved', 'closed'];
+
+const ticketUpdatePayload = ref<TicketUpdatePayload>({});
+
+watch(ticket, (newTicket) => {
+  if (newTicket) {
+    ticketUpdatePayload.value = structuredClone(toRaw(newTicket));
+  }
+}, { immediate: true });
 </script>
 
 <template>
@@ -21,7 +45,35 @@ const { data: ticket, isLoading, error, isFetching } = useGetTicketById(ticketId
   </div>
 
   <div v-else>
-    <pre>{{ ticket }}</pre>
+    <pre>{{ ticketUpdatePayload }}</pre>
+
+    <div>
+      <Input v-model="ticketUpdatePayload.subject" type="text" placeholder="subject" />
+
+      <Textarea v-model="ticketUpdatePayload.description" placeholder="description" />
+
+      <Select v-model="ticketUpdatePayload.priority">
+        <SelectTrigger>
+          <SelectValue placeholder="Priority" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem v-for="priority in priorityList" :key="priority" :value="priority">
+            {{ priority }}
+          </SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Select v-model="ticketUpdatePayload.status">
+        <SelectTrigger>
+          <SelectValue placeholder="Status" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem v-for="status in statusList" :key="status" :value="status">
+            {{ status }}
+          </SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
   </div>
 </template>
 
