@@ -6,7 +6,13 @@ import { ref, toRaw, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import Button from '@/components/ui/button/Button.vue';
+import Card from '@/components/ui/card/Card.vue';
+import CardContent from '@/components/ui/card/CardContent.vue';
+import CardDescription from '@/components/ui/card/CardDescription.vue';
+import CardHeader from '@/components/ui/card/CardHeader.vue';
+import CardTitle from '@/components/ui/card/CardTitle.vue';
 import { Input } from '@/components/ui/input';
+import Label from '@/components/ui/label/Label.vue';
 import {
   Select,
   SelectContent,
@@ -37,51 +43,72 @@ watch(ticket, (newTicket) => {
 </script>
 
 <template>
-  <div v-if="isLoading">
-    Loading...
-  </div>
-  <div v-else-if="error">
-    {{ error }}
-  </div>
-  <div v-else-if="isFetching">
-    Fetching...
-  </div>
+  <Card class="shadow-none w-full">
+    <CardHeader>
+      <CardTitle>Tickets</CardTitle>
+      <CardDescription>Card Description</CardDescription>
 
-  <div v-else>
-    <pre>{{ ticketUpdatePayload }}</pre>
+      <div class="justify-self-end">
+        <Button @click="() => updateTicketMutate({ id: ticketId, changes: ticketUpdatePayload })">
+          <Save :size="16" /> Update
+        </Button>
+      </div>
+    </CardHeader>
 
-    <div>
-      <Input v-model="ticketUpdatePayload.subject" type="text" placeholder="subject" />
+    <CardContent>
+      <div v-if="isLoading">
+        Loading...
+      </div>
+      <div v-else-if="error">
+        {{ error }}
+      </div>
+      <div v-else-if="isFetching">
+        Fetching...
+      </div>
 
-      <Textarea v-model="ticketUpdatePayload.description" placeholder="description" />
+      <div v-else-if="ticket">
+        <div class="grid gap-4">
+          <div class="grid gap-3">
+            <Label for="ticket-subject">Subject *</Label>
+            <Input id="ticket-subject" v-model="ticket.subject" type="text" placeholder="subject" />
+          </div>
 
-      <Select v-model="ticketUpdatePayload.priority">
-        <SelectTrigger>
-          <SelectValue placeholder="Priority" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem v-for="priority in priorityList" :key="priority" :value="priority">
-            {{ priority }}
-          </SelectItem>
-        </SelectContent>
-      </Select>
+          <div class="grid gap-3">
+            <Label for="ticket-description">Description</Label>
+            <Textarea id="ticket-description" v-model="ticket.description" placeholder="description" />
+          </div>
 
-      <Select v-model="ticketUpdatePayload.status">
-        <SelectTrigger>
-          <SelectValue placeholder="Status" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem v-for="status in statusList" :key="status" :value="status">
-            {{ status }}
-          </SelectItem>
-        </SelectContent>
-      </Select>
+          <div class="grid gap-3">
+            <Label for="ticket-priority">Priority *</Label>
+            <Select id="ticket-priority" v-model="ticket.priority">
+              <SelectTrigger>
+                <SelectValue placeholder="Priority" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem v-for="priority in priorityList" :key="priority" :value="priority">
+                  {{ priority }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-      <Button @click="() => updateTicketMutate({ id: ticketId, changes: ticketUpdatePayload })">
-        <Save :size="16" /> Update
-      </Button>
-    </div>
-  </div>
+          <div class="grid gap-3">
+            <Label for="ticket-status">Status *</Label>
+            <Select id="ticket-status" v-model="ticket.status">
+              <SelectTrigger>
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem v-for="status in statusList" :key="status" :value="status">
+                  {{ status }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </div>
+    </CardContent>
+  </Card>
 </template>
 
 <style scoped></style>
