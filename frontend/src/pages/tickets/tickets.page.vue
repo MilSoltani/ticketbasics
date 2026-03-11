@@ -36,8 +36,12 @@ const router = useRouter();
   <Card class="shadow-none w-full">
     <CardHeader>
       <div class="flex justify-between">
-        <CardTitle>Tickets</CardTitle>
-        <CardDescription />
+        <div>
+          <CardTitle class="mb-2">
+            Tickets
+          </CardTitle>
+          <CardDescription>List of tickets</CardDescription>
+        </div>
 
         <div class="justify-self-end">
           <NewTicketDialog />

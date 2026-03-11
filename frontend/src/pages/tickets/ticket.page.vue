@@ -47,12 +47,14 @@ watch(ticket, (newTicket) => {
     <CardHeader>
       <div class="flex justify-between">
         <div class="">
-          <CardTitle>Tickets</CardTitle>
-          <CardDescription />
+          <CardTitle class="mb-2">
+            Ticket
+          </CardTitle>
+          <CardDescription>Edit page of a ticket</CardDescription>
         </div>
 
         <div class="justify-self-end">
-          <Button size="sm" @click="() => updateTicketMutate({ id: ticketId, changes: ticketUpdatePayload })">
+          <Button variant="default" size="sm" @click="() => updateTicketMutate({ id: ticketId, changes: ticketUpdatePayload })">
             <Save :size="16" /> Update
           </Button>
         </div>
