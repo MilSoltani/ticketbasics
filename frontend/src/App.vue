@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import ModeToggle from './components/ModeToggle.vue';
+import AppHeader from './components/AppHeader.vue';
 </script>
 
 <template>
-  <ModeToggle />
-  <RouterView />
+  <AppHeader />
+
+  <main class="pt-4 mx-auto flex max-w-6xl items-center justify-between px-4">
+    <RouterView />
+  </main>
 </template>
 
 <style scoped>
