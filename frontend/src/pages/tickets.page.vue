@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useGetAllTickets } from '../api/use-tickets';
 import Table from '../components/ui/table/Table.vue';
 import TableBody from '../components/ui/table/TableBody.vue';
 import TableCell from '../components/ui/table/TableCell.vue';
 import TableHead from '../components/ui/table/TableHead.vue';
 import TableHeader from '../components/ui/table/TableHeader.vue';
 import TableRow from '../components/ui/table/TableRow.vue';
+import { useGetAllTickets } from '../queries/tickets.query';
 
 const { data: tickets, isLoading, error, isFetching } = useGetAllTickets();
 </script>
