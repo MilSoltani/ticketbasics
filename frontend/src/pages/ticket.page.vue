@@ -16,14 +16,14 @@ import {
 } from '@/components/ui/select';
 import Textarea from '@/components/ui/textarea/Textarea.vue';
 
-import { updateTicket, useGetTicketById } from '../api/use-tickets';
+import { useGetTicketById, useUpdateTicket } from '../api/use-tickets';
 
 const route = useRoute();
 const ticketId = Number(route.params.id);
 
 const { data: ticket, isLoading, error, isFetching } = useGetTicketById(ticketId);
 
-const { mutate: updateTicketMutate } = updateTicket();
+const { mutate: updateTicketMutate } = useUpdateTicket();
 
 const priorityList = ['low', 'medium', 'high', 'urgent'];
 const statusList = ['open', 'pending', 'working', 'resolved', 'closed'];
