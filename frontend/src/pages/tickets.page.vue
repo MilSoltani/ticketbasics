@@ -3,6 +3,7 @@ import type { TicketCreatePayload } from '@ticketbasics/backend/client';
 
 import { Plus } from 'lucide-vue-next';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 import Button from '@/components/ui/button/Button.vue';
 import {
@@ -37,6 +38,7 @@ const { data: tickets, isLoading, error, isFetching } = useGetAllTickets();
 const priorityList = ['low', 'medium', 'high', 'urgent'];
 
 const { mutate: useCreateMutate } = useCreateTicket();
+const router = useRouter();
 
 const newTicket = ref<TicketCreatePayload>({
   subject: '',
@@ -131,7 +133,7 @@ const newTicket = ref<TicketCreatePayload>({
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow v-for="ticket in tickets" :key="ticket.id">
+        <TableRow v-for="ticket in tickets" :key="ticket.id" class="cursor-pointer" @click="router.push(`/tickets/${ticket.id}`)">
           <TableCell>#{{ ticket.id }}</TableCell>
           <TableCell>
             <div class="text-xl">
