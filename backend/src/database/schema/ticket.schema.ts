@@ -11,8 +11,8 @@ export const ticketsTable = pgTable('tickets', {
   description: text().notNull(),
   status: statusEnum().notNull().default('open'),
   priority: priorityEnum().notNull().default('low'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
 export const ticketSchema = createSelectSchema(ticketsTable);
