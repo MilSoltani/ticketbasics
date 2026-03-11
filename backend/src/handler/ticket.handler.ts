@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 
-import { ticketInsertSchema, ticketUpdateSchema } from '@/database/schema';
+import { ticketCreateSchema, ticketUpdateSchema } from '@/database/schema';
 import { TicketRepository } from '@/repository/ticket.repository';
 
 const ticketHandler = new Hono()
@@ -26,7 +26,7 @@ const ticketHandler = new Hono()
   })
   .post('/', async (c) => {
     const body = await c.req.json();
-    const result = ticketInsertSchema.safeParse(body);
+    const result = ticketCreateSchema.safeParse(body);
 
     if (!result.success) {
       return c.json({ errors: result.error.flatten() }, 400);

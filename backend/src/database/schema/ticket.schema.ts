@@ -17,7 +17,7 @@ export const ticketsTable = pgTable('tickets', {
 
 export const ticketSchema = createSelectSchema(ticketsTable);
 
-export const ticketInsertSchema = createInsertSchema(ticketsTable)
+export const ticketCreateSchema = createInsertSchema(ticketsTable)
   .omit({
     createdAt: true,
     updatedAt: true,
