@@ -116,16 +116,31 @@ const newTicket = ref<TicketCreatePayload>({
     <Table v-else>
       <TableHeader>
         <TableRow>
-          <TableHead>Id</TableHead>
-          <TableHead>Subject</TableHead>
-          <TableHead>Priority</TableHead>
-          <TableHead>Status</TableHead>
+          <TableHead class="font-bold">
+            Id
+          </TableHead>
+          <TableHead class="font-bold">
+            Subject
+          </TableHead>
+          <TableHead class="font-bold">
+            Priority
+          </TableHead>
+          <TableHead class="font-bold">
+            Status
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         <TableRow v-for="ticket in tickets" :key="ticket.id">
-          <TableCell>{{ ticket.id }}</TableCell>
-          <TableCell>{{ ticket.subject }}</TableCell>
+          <TableCell>#{{ ticket.id }}</TableCell>
+          <TableCell>
+            <div class="text-xl">
+              {{ ticket.subject }}
+            </div>
+            <div class="text-muted-foreground">
+              {{ ticket.createdAt }}
+            </div>
+          </TableCell>
           <TableCell>{{ ticket.priority }}</TableCell>
           <TableCell>{{ ticket.status }}</TableCell>
         </TableRow>
