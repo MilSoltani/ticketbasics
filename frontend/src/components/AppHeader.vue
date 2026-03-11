@@ -10,8 +10,9 @@ import ModeToggle from './ModeToggle.vue';
       </div>
 
       <nav class="flex items-center gap-6 text-sm text-muted-foreground">
-        <a href="/" class="hover:text-foreground">Home</a>
-        <a href="/docs" class="hover:text-foreground">Docs</a>
+        <RouterLink to="/tickets">
+          Tickets
+        </RouterLink>
         <ModeToggle />
       </nav>
     </div>
