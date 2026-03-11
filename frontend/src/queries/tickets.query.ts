@@ -1,6 +1,8 @@
+import type { Ticket } from '@ticketbasics/backend/client';
+
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 
-import { getAllTickets, getTicketById, updateTicket } from '@/apis/tickets.api';
+import { createTicket, getAllTickets, getTicketById, updateTicket } from '@/apis/tickets.api';
 
 export function useGetAllTickets() {
   const { data, isLoading, error, isFetching } = useQuery({
@@ -30,13 +32,32 @@ export function useUpdateTicket() {
   const { mutate, mutateAsync, isPending, error, reset } = useMutation({
     mutationFn: updateTicket,
 
-    onSuccess: (ticket) => {
+    onSuccess: (ticket: Ticket) => {
       queryClient.invalidateQueries({ queryKey: ['tickets', 'all'] });
       queryClient.setQueryData(['tickets', ticket.id], ticket);
     },
 
     onError: (err) => {
       console.error('Ticket update failed', err);
+    },
+  });
+
+  return { mutate, mutateAsync, isPending, error, reset };
+}
+
+export function useCreateTicket() {
+  const queryClient = useQueryClient();
+
+  const { mutate, mutateAsync, isPending, error, reset } = useMutation({
+    mutationFn: createTicket,
+
+    onSuccess: (ticket: Ticket) => {
+      queryClient.invalidateQueries({ queryKey: ['tickets', 'all'] });
+      queryClient.setQueryData(['tickets', ticket.id], ticket);
+    },
+
+    onError: (err) => {
+      console.error('Ticket creation failed', err);
     },
   });
 

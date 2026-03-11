@@ -1,4 +1,4 @@
-import type { Ticket, TicketUpdatePayload } from '@ticketbasics/backend/client';
+import type { Ticket, TicketCreatePayload, TicketUpdatePayload } from '@ticketbasics/backend/client';
 
 import { ticketsClient } from '@ticketbasics/backend/client';
 
@@ -50,9 +50,17 @@ export async function updateTicket(
 
   const json = await response.json();
 
-  if (Array.isArray(json.data)) {
-    throw new TypeError('Invalid response: expected single ticket');
+  return json.data;
+}
+
+export async function createTicket(newTicket: TicketCreatePayload) {
+  const response = await ticketsClient.index.$post({ json: newTicket });
+
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.statusText}`);
   }
+
+  const json = await response.json();
 
   return json.data;
 }
