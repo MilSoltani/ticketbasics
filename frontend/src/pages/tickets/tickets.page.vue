@@ -35,11 +35,13 @@ const router = useRouter();
 <template>
   <Card class="shadow-none w-full">
     <CardHeader>
-      <CardTitle>Tickets</CardTitle>
-      <CardDescription>Card Description</CardDescription>
+      <div class="flex justify-between">
+        <CardTitle>Tickets</CardTitle>
+        <CardDescription />
 
-      <div class="justify-self-end">
-        <NewTicketDialog />
+        <div class="justify-self-end">
+          <NewTicketDialog />
+        </div>
       </div>
     </CardHeader>
 
@@ -54,7 +56,7 @@ const router = useRouter();
         Fetching...
       </div>
 
-      <div v-else class="border">
+      <div v-else class="border rounded-lg">
         <Table>
           <TableHeader>
             <TableRow>
@@ -70,19 +72,14 @@ const router = useRouter();
               <TableHead class="font-bold">
                 Status
               </TableHead>
-              <TableHead />
+              <TableHead class="w-0" />
             </TableRow>
           </TableHeader>
           <TableBody>
             <TableRow v-for="ticket in tickets" :key="ticket.id" class="cursor-pointer" @click="router.push(`/tickets/${ticket.id}`)">
               <TableCell>#{{ ticket.id }}</TableCell>
               <TableCell>
-                <div class="">
-                  {{ ticket.subject }}
-                </div>
-                <div class="text-muted-foreground">
-                  {{ ticket.createdAt }}
-                </div>
+                {{ ticket.subject }}
               </TableCell>
               <TableCell>{{ ticket.priority }}</TableCell>
               <TableCell>{{ ticket.status }}</TableCell>

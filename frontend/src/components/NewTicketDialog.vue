@@ -41,17 +41,14 @@ const newTicket = ref<TicketCreatePayload>({
   <Dialog>
     <form>
       <DialogTrigger as-child>
-        <Button variant="outline">
+        <Button size="sm" variant="outline">
           <Plus :size="16" /> New Ticket
         </Button>
       </DialogTrigger>
       <DialogContent class="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>New Ticket</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when you're
-            done.
-          </DialogDescription>
+          <DialogDescription />
         </DialogHeader>
         <div class="grid gap-4">
           <div class="grid gap-3">
@@ -80,12 +77,12 @@ const newTicket = ref<TicketCreatePayload>({
         </div>
         <DialogFooter>
           <DialogClose as-child>
-            <Button variant="outline">
+            <Button size="sm" variant="outline">
               Cancel
             </Button>
           </DialogClose>
           <DialogClose as-child>
-            <Button type="submit" @click="() => useCreateMutate(newTicket)">
+            <Button size="sm" type="submit" @click="() => useCreateMutate(newTicket)">
               <Plus :size="16" /> Create
             </Button>
           </DialogClose>
