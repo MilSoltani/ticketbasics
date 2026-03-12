@@ -7,6 +7,7 @@ import { Save } from 'lucide-vue-next';
 import { ErrorMessage, useForm } from 'vee-validate';
 import { computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { toast } from 'vue-sonner';
 
 import Button from '@/components/ui/button/Button.vue';
 import Card from '@/components/ui/card/Card.vue';
@@ -53,7 +54,13 @@ const onSubmit = handleSubmit((updatedTicket: TicketUpdatePayload) => {
   updateTicket(
     { id: ticketId.value, changes: updatedTicket },
     {
-      onSuccess: () => {},
+      onSuccess: () => {
+        toast.success('updated!');
+      },
+      onError: (error: any) => {
+        const message = error?.message || error?.response?.data?.message || 'Failed to update ticket';
+        toast.error(message);
+      },
     },
   );
 });

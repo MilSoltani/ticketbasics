@@ -6,6 +6,7 @@ import { toTypedSchema } from '@vee-validate/zod';
 import { Plus } from 'lucide-vue-next';
 import { ErrorMessage, useForm } from 'vee-validate';
 import { ref } from 'vue';
+import { toast } from 'vue-sonner';
 
 import {
   Dialog,
@@ -51,6 +52,11 @@ const onSubmit = handleSubmit((newTicket: TicketCreatePayload) => {
     onSuccess: () => {
       resetForm();
       dialogOpen.value = false;
+      toast.success('created!');
+    },
+    onError: (error: any) => {
+      const message = error?.message || error?.response?.data?.message || 'Failed to create ticket';
+      toast.error(message);
     },
   });
 });
