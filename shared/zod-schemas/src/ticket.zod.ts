@@ -19,6 +19,7 @@ export const TicketCreateSchema = TicketSchema.omit({
   updatedAt: true,
 }).extend({
   status: TicketStatusEnum.optional(),
+  priority: TicketPriorityEnum.optional(),
 });
 
 export const TicketUpdateSchema = TicketCreateSchema.partial();

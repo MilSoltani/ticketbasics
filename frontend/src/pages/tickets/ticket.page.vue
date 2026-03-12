@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import type { TicketUpdatePayload } from '@ticketbasics/zod-schemas';
 
+import { TicketPriorityEnum, TicketStatusEnum, TicketUpdateSchema } from '@ticketbasics/zod-schemas';
+import { toTypedSchema } from '@vee-validate/zod';
 import { Save } from 'lucide-vue-next';
-import { ref, toRaw, watch } from 'vue';
+import { ErrorMessage, useForm } from 'vee-validate';
+import { computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import Button from '@/components/ui/button/Button.vue';
@@ -24,97 +27,137 @@ import Textarea from '@/components/ui/textarea/Textarea.vue';
 import { useGetTicketById, useUpdateTicket } from '@/queries/tickets.query';
 
 const route = useRoute();
-const ticketId = Number(route.params.id);
+const ticketId = computed(() => Number(route.params.id));
 
-const { data: ticket, isLoading, error, isFetching } = useGetTicketById(ticketId);
+const { data: ticket, isLoading, error } = useGetTicketById(ticketId);
 
-const { mutate: updateTicketMutate } = useUpdateTicket();
+const { mutate: updateTicket, isPending } = useUpdateTicket();
 
-const priorityList = ['low', 'medium', 'high', 'urgent'];
-const statusList = ['open', 'pending', 'working', 'resolved', 'closed'];
+const { defineField, handleSubmit, errors, resetForm } = useForm({
+  validationSchema: toTypedSchema(TicketUpdateSchema),
+  initialValues: {},
+});
 
-const ticketUpdatePayload = ref<TicketUpdatePayload>({});
+const [subject, subjectAttrs] = defineField('subject');
+const [description, descriptionAttrs] = defineField('description');
+const [priority, priorityAttrs] = defineField('priority');
+const [status, statusAttrs] = defineField('status');
 
-watch(ticket, (newTicket) => {
-  if (newTicket) {
-    ticketUpdatePayload.value = structuredClone(toRaw(newTicket));
+watch(ticket, (newTicket, oldTicket) => {
+  if (newTicket && newTicket !== oldTicket) {
+    resetForm({ values: newTicket });
   }
 }, { immediate: true });
+
+const onSubmit = handleSubmit((updatedTicket: TicketUpdatePayload) => {
+  updateTicket(
+    { id: ticketId.value, changes: updatedTicket },
+    {
+      onSuccess: () => {},
+    },
+  );
+});
 </script>
 
 <template>
   <Card class="shadow-none w-full">
-    <CardHeader>
-      <div class="flex justify-between">
-        <div class="">
-          <CardTitle class="mb-2">
-            Ticket
-          </CardTitle>
-          <CardDescription>Edit page of a ticket</CardDescription>
-        </div>
+    <form @submit.prevent="onSubmit">
+      <CardHeader>
+        <div class="flex justify-between">
+          <div class="mb-5">
+            <CardTitle class="mb-2">
+              Ticket
+            </CardTitle>
+            <CardDescription>Edit page of a ticket</CardDescription>
+          </div>
 
-        <div class="justify-self-end">
-          <Button variant="default" size="sm" @click="() => updateTicketMutate({ id: ticketId, changes: ticketUpdatePayload })">
-            <Save :size="16" /> Update
-          </Button>
+          <div class="justify-self-end">
+            <Button variant="default" size="sm" type="submit" :disabled="isPending">
+              <Save :size="16" /> Update
+            </Button>
+          </div>
         </div>
-      </div>
-    </CardHeader>
+      </CardHeader>
 
-    <CardContent>
       <div v-if="isLoading">
         Loading...
       </div>
       <div v-else-if="error">
-        {{ error }}
-      </div>
-      <div v-else-if="isFetching">
-        Fetching...
+        <pre>{{ error }}</pre>
       </div>
 
-      <div v-else-if="ticket">
-        <div class="grid gap-4">
-          <div class="grid gap-3">
-            <Label for="ticket-subject">Subject *</Label>
-            <Input id="ticket-subject" v-model="ticketUpdatePayload.subject" type="text" placeholder="subject" />
+      <CardContent v-else>
+        <div>
+          <div class="mb-5">
+            <Label for="subject" class="mb-2 flex justify-between">
+              <div>Subject *</div>
+
+              <div class="text-red-500">
+                <ErrorMessage name="subject" />
+              </div>
+            </Label>
+
+            <Input id="subject" v-model="subject" :class="{ 'border-red-500': errors.subject }" v-bind="subjectAttrs" />
           </div>
 
-          <div class="grid gap-3">
-            <Label for="ticket-description">Description</Label>
-            <Textarea id="ticket-description" v-model="ticketUpdatePayload.description" placeholder="description" />
+          <div class="mb-5">
+            <Label for="description" class="mb-2 flex justify-between">
+              <div>Description *</div>
+
+              <div class="text-red-500">
+                <ErrorMessage name="description" />
+              </div>
+            </Label>
+
+            <Textarea id="description" v-model="description" :class="{ 'border-red-500': errors.description }" v-bind="descriptionAttrs" />
           </div>
 
-          <div class="grid gap-3">
-            <Label for="ticket-priority">Priority *</Label>
-            <Select id="ticket-priority" v-model="ticketUpdatePayload.priority">
+          <div class="mb-5">
+            <Label for="priority" class="mb-2 flex justify-between">
+              <div>Priority *</div>
+
+              <div class="text-red-500">
+                <ErrorMessage name="priority" />
+              </div>
+            </Label>
+
+            <Select id="priority" v-model="priority" :class="{ 'border-red-500': errors.priority }" v-bind="priorityAttrs">
               <SelectTrigger>
                 <SelectValue placeholder="Priority" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="priority in priorityList" :key="priority" :value="priority">
-                  {{ priority }}
+                <SelectItem v-for="priorityOption in TicketPriorityEnum.options" :key="priorityOption" :value="priorityOption">
+                  {{ priorityOption }}
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <div class="grid gap-3">
-            <Label for="ticket-status">Status *</Label>
-            <Select id="ticket-status" v-model="ticketUpdatePayload.status">
+          <div class="mb-5">
+            <Label for="status" class="mb-2 flex justify-between">
+              <div>Status *</div>
+
+              <div class="text-red-500">
+                <ErrorMessage name="status" />
+              </div>
+            </Label>
+
+            <Select id="status" v-model="status" :class="{ 'border-red-500': errors.status }" v-bind="statusAttrs">
               <SelectTrigger>
-                <SelectValue placeholder="Status" />
+                <SelectValue placeholder="status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="status in statusList" :key="status" :value="status">
-                  {{ status }}
+                <SelectItem v-for="statusOption in TicketStatusEnum.options" :key="statusOption" :value="statusOption">
+                  {{ statusOption }}
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
-      </div>
-    </CardContent>
+      </CardContent>
+    </form>
   </Card>
 </template>
 
-<style scoped></style>
+<style scoped>
+</style>

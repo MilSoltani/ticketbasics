@@ -1,4 +1,5 @@
-import type { Ticket } from '@ticketbasics/backend/client';
+import type { Ticket } from '@ticketbasics/zod-schemas';
+import type { Ref } from 'vue';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 
@@ -15,10 +16,10 @@ export function useGetAllTickets() {
   return { data, isLoading, error, isFetching };
 }
 
-export function useGetTicketById(id: number) {
+export function useGetTicketById(id: Ref<number>) {
   const { data, isLoading, error, isFetching } = useQuery({
     queryKey: ['tickets', id],
-    queryFn: () => getTicketById(id),
+    queryFn: () => getTicketById(id.value),
     staleTime: 1000 * 60 * 5,
     retry: 2,
   });
