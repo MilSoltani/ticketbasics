@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const TicketStatusEnum = z.enum(['open', 'closed', 'pending', 'in_progress']);
+export const TicketStatusEnum = z.enum(['open', 'pending', 'working', 'resolved', 'closed']);
 export const TicketPriorityEnum = z.enum(['low', 'medium', 'high', 'urgent']);
 
 export const TicketSchema = z.object({
@@ -13,7 +13,7 @@ export const TicketSchema = z.object({
   updatedAt: z.date(),
 });
 
-export const CreateTicketSchema = TicketSchema.omit({
+export const TicketCreateSchema = TicketSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
@@ -21,10 +21,10 @@ export const CreateTicketSchema = TicketSchema.omit({
   status: TicketStatusEnum.optional(),
 });
 
-export const UpdateTicketSchema = CreateTicketSchema.partial();
+export const TicketUpdateSchema = TicketCreateSchema.partial();
 
 export type Ticket = z.infer<typeof TicketSchema>;
-export type TicketCreatePayload = z.infer<typeof CreateTicketSchema>;
-export type TicketUpdatePayload = z.infer<typeof UpdateTicketSchema>;
+export type TicketCreatePayload = z.infer<typeof TicketCreateSchema>;
+export type TicketUpdatePayload = z.infer<typeof TicketUpdateSchema>;
 export type TicketStatus = z.infer<typeof TicketStatusEnum>;
 export type TicketPriority = z.infer<typeof TicketPriorityEnum>;

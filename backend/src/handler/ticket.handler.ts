@@ -1,7 +1,7 @@
 import { zValidator } from '@hono/zod-validator';
+import { TicketCreateSchema, TicketUpdateSchema } from '@ticketbasics/zod-schemas';
 import { Hono } from 'hono';
 
-import { ticketCreateSchema, ticketUpdateSchema } from '@/database/schema';
 import { TicketRepository } from '@/repository/ticket.repository';
 
 const ticketHandler = new Hono()
@@ -25,14 +25,14 @@ const ticketHandler = new Hono()
 
     return c.json({ data: ticket });
   })
-  .post('/', zValidator('json', ticketCreateSchema), async (c) => {
+  .post('/', zValidator('json', TicketCreateSchema), async (c) => {
     const data = await c.req.valid('json');
 
     const newTicket = await TicketRepository.create(data);
 
     return c.json({ data: newTicket }, 201);
   })
-  .put('/:id', zValidator('json', ticketUpdateSchema), async (c) => {
+  .put('/:id', zValidator('json', TicketUpdateSchema), async (c) => {
     const id = Number(c.req.param('id'));
 
     if (Number.isNaN(id)) {

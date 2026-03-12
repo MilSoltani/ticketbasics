@@ -1,5 +1,4 @@
 import { integer, pgEnum, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core';
-import { createInsertSchema, createSelectSchema, createUpdateSchema } from 'drizzle-zod';
 
 export const statusEnum = pgEnum('status', ['open', 'pending', 'working', 'resolved', 'closed']);
 
@@ -14,18 +13,3 @@ export const ticketsTable = pgTable('tickets', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
-
-export const ticketSchema = createSelectSchema(ticketsTable);
-
-export const ticketCreateSchema = createInsertSchema(ticketsTable)
-  .omit({
-    createdAt: true,
-    updatedAt: true,
-  });
-
-export const ticketUpdateSchema = createUpdateSchema(ticketsTable)
-  .omit({
-    createdAt: true,
-    updatedAt: true,
-  })
-  .partial();

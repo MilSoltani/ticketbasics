@@ -1,8 +1,9 @@
 import type { InferInsertModel } from 'drizzle-orm';
 
+import { TicketCreateSchema, TicketSchema } from '@ticketbasics/zod-schemas';
 import { eq } from 'drizzle-orm';
 
-import { ticketCreateSchema, ticketSchema, ticketsTable } from '@/database/schema';
+import { ticketsTable } from '@/database/schema';
 import { db } from '@/index';
 
 type InsertTicket = InferInsertModel<typeof ticketsTable>;
@@ -13,7 +14,7 @@ export const TicketRepository = {
       .select()
       .from(ticketsTable);
 
-    return ticketSchema.array().parse(result);
+    return TicketSchema.array().parse(result);
   },
 
   async getById(id: number) {
@@ -26,11 +27,11 @@ export const TicketRepository = {
       throw new Error(`Ticket with id ${id} not found`);
     }
 
-    return ticketSchema.parse(result);
+    return TicketSchema.parse(result);
   },
 
   async create(ticket: InsertTicket) {
-    const validated = ticketCreateSchema.parse(ticket);
+    const validated = TicketCreateSchema.parse(ticket);
 
     const [result] = await db
       .insert(ticketsTable)
@@ -41,12 +42,11 @@ export const TicketRepository = {
       throw new Error('Failed to create ticket');
     }
 
-    return ticketSchema.parse(result);
+    return TicketSchema.parse(result);
   },
 
   async update(id: number, data: Partial<InsertTicket>) {
-    // Validate partial input before updating
-    const validated = ticketSchema.partial().parse(data);
+    const validated = TicketSchema.partial().parse(data);
 
     const [result] = await db
       .update(ticketsTable)
@@ -58,7 +58,7 @@ export const TicketRepository = {
       throw new Error(`Failed to update ticket with id ${id}`);
     }
 
-    return ticketSchema.parse(result);
+    return TicketSchema.parse(result);
   },
 
   async delete(id: number) {
@@ -71,6 +71,6 @@ export const TicketRepository = {
       throw new Error(`Ticket with id ${id} not found`);
     }
 
-    return ticketSchema.parse(result);
+    return TicketSchema.parse(result);
   },
 };
