@@ -2,7 +2,7 @@
   "name": "@ticketbasics/backend",
   "type": "module",
   "exports": {
-    "./client": "./src/client/index.ts"
+    "./client": "./src/clients.ts"
   },
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
@@ -10,9 +10,9 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@ticketbasics/zod-schemas": "workspace:*",
     "@hono/node-server": "^1.19.11",
     "@hono/zod-validator": "^0.7.6",
+    "@ticketbasics/zod-schemas": "workspace:*",
     "drizzle-orm": "^0.45.1",
     "drizzle-seed": "^0.3.1",
     "drizzle-zod": "^0.8.3",
