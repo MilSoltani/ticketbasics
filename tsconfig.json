@@ -3,6 +3,7 @@
     "skipLibCheck": true
   },
   "references": [
+    { "path": "./shared/zod-schemas" },
     { "path": "./backend" },
     { "path": "./frontend" }
   ]

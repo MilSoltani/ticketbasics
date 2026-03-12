@@ -1,0 +1,11 @@
+{
+  "name": "@ticketbasics/zod-schemas",
+  "type": "module",
+  "version": "0.0.0",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
+  }
+}
