@@ -76,17 +76,17 @@ watch(ticket, (newTicket) => {
         <div class="grid gap-4">
           <div class="grid gap-3">
             <Label for="ticket-subject">Subject *</Label>
-            <Input id="ticket-subject" v-model="ticket.subject" type="text" placeholder="subject" />
+            <Input id="ticket-subject" v-model="ticketUpdatePayload.subject" type="text" placeholder="subject" />
           </div>
 
           <div class="grid gap-3">
             <Label for="ticket-description">Description</Label>
-            <Textarea id="ticket-description" v-model="ticket.description" placeholder="description" />
+            <Textarea id="ticket-description" v-model="ticketUpdatePayload.description" placeholder="description" />
           </div>
 
           <div class="grid gap-3">
             <Label for="ticket-priority">Priority *</Label>
-            <Select id="ticket-priority" v-model="ticket.priority">
+            <Select id="ticket-priority" v-model="ticketUpdatePayload.priority">
               <SelectTrigger>
                 <SelectValue placeholder="Priority" />
               </SelectTrigger>
@@ -100,7 +100,7 @@ watch(ticket, (newTicket) => {
 
           <div class="grid gap-3">
             <Label for="ticket-status">Status *</Label>
-            <Select id="ticket-status" v-model="ticket.status">
+            <Select id="ticket-status" v-model="ticketUpdatePayload.status">
               <SelectTrigger>
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
