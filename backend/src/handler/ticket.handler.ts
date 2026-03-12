@@ -1,3 +1,4 @@
+import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
 
 import { ticketCreateSchema, ticketUpdateSchema } from '@/database/schema';
@@ -24,33 +25,23 @@ const ticketHandler = new Hono()
 
     return c.json({ data: ticket });
   })
-  .post('/', async (c) => {
-    const body = await c.req.json();
-    const result = ticketCreateSchema.safeParse(body);
+  .post('/', zValidator('json', ticketCreateSchema), async (c) => {
+    const data = await c.req.valid('json');
 
-    if (!result.success) {
-      return c.json({ errors: result.error.flatten() }, 400);
-    }
-
-    const newTicket = await TicketRepository.create(result.data);
+    const newTicket = await TicketRepository.create(data);
 
     return c.json({ data: newTicket }, 201);
   })
-  .put('/:id', async (c) => {
+  .put('/:id', zValidator('json', ticketUpdateSchema), async (c) => {
     const id = Number(c.req.param('id'));
 
     if (Number.isNaN(id)) {
       return c.json({ message: 'Invalid ID' }, 400);
     }
 
-    const body = await c.req.json();
-    const result = ticketUpdateSchema.safeParse(body);
+    const data = await c.req.valid('json');
 
-    if (!result.success) {
-      return c.json({ errors: result.error.flatten() }, 400);
-    }
-
-    const updatedTicket = await TicketRepository.update(id, result.data);
+    const updatedTicket = await TicketRepository.update(id, data);
 
     if (!updatedTicket) {
       return c.json({ message: 'Not found' }, 404);
