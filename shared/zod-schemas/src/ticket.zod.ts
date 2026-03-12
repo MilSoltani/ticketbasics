@@ -17,12 +17,14 @@ export const CreateTicketSchema = TicketSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  status: TicketStatusEnum.optional(),
 });
 
 export const UpdateTicketSchema = CreateTicketSchema.partial();
 
 export type Ticket = z.infer<typeof TicketSchema>;
-export type CreateTicketInput = z.infer<typeof CreateTicketSchema>;
-export type UpdateTicketInput = z.infer<typeof UpdateTicketSchema>;
+export type TicketCreatePayload = z.infer<typeof CreateTicketSchema>;
+export type TicketUpdatePayload = z.infer<typeof UpdateTicketSchema>;
 export type TicketStatus = z.infer<typeof TicketStatusEnum>;
 export type TicketPriority = z.infer<typeof TicketPriorityEnum>;

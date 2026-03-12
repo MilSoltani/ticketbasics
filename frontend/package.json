@@ -14,11 +14,11 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
-    "@ticketbasics/zod-schemas": "workspace:*",
     "@tailwindcss/vite": "^4.2.1",
     "@tanstack/vue-query": "^5.92.9",
     "@tanstack/vue-table": "^8.21.3",
     "@ticketbasics/backend": "workspace:*",
+    "@ticketbasics/zod-schemas": "workspace:*",
     "@vueuse/core": "^14.2.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { TicketUpdatePayload } from '@ticketbasics/backend/client';
+import type { TicketUpdatePayload } from '@ticketbasics/zod-schemas';
 
 import { Save } from 'lucide-vue-next';
 import { ref, toRaw, watch } from 'vue';

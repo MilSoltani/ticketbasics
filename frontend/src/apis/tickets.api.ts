@@ -1,4 +1,4 @@
-import type { Ticket, TicketCreatePayload, TicketUpdatePayload } from '@ticketbasics/backend/client';
+import type { Ticket, TicketCreatePayload, TicketUpdatePayload } from '@ticketbasics/zod-schemas';
 
 import { ticketsClient } from '@ticketbasics/backend/client';
 
