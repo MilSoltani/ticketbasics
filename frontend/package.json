@@ -19,6 +19,7 @@
     "@tanstack/vue-table": "^8.21.3",
     "@ticketbasics/backend": "workspace:*",
     "@ticketbasics/zod-schemas": "workspace:*",
+    "@vee-validate/zod": "^4.15.1",
     "@vueuse/core": "^14.2.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -26,8 +27,10 @@
     "reka-ui": "^2.9.0",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.1",
+    "vee-validate": "^4.15.1",
     "vue": "^3.5.29",
-    "vue-router": "^5.0.3"
+    "vue-router": "^5.0.3",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@tsconfig/node24": "^24.0.4",
