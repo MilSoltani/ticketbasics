@@ -1,18 +1,15 @@
 <script setup lang="ts">
 import type { PaginationType } from '@ticketbasics/zod-schemas';
 
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationFirst,
-  PaginationItem,
-  PaginationLast,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -75,61 +72,70 @@ function handleLimitChange(newLimit: string) {
 </script>
 
 <template>
-  <div class="flex items-center justify-between gap-4">
-    <Pagination
-      class="justify-start"
-      :total="total"
-      :items-per-page="limit"
-      :sibling-count="1"
-      :page="localPage"
-      @update:page="handlePageChange"
-    >
-      <template #default="{ page }">
-        <PaginationContent v-slot="{ items }" class="flex justify-start gap-1">
-          <PaginationFirst class="cursor-pointer" />
-          <PaginationPrevious class="cursor-pointer" />
-
-          <template v-for="(item, idx) in items" :key="item.type === 'page' ? `page-${item.value}` : `ellipsis-${idx}`">
-            <PaginationItem
-              v-if="item.type === 'page'"
-              :value="item.value"
-              :is-active="item.value === page"
-              size="default"
-              class="h-9 w-9 cursor-pointer"
-            >
-              {{ item.value }}
-            </PaginationItem>
-
-            <PaginationEllipsis v-else :index="idx" />
-          </template>
-
-          <PaginationNext class="cursor-pointer" />
-          <PaginationLast class="cursor-pointer" />
-        </PaginationContent>
-      </template>
-    </Pagination>
-
-    <div class="flex items-center gap-2">
-      <span class="text-sm">Rows:</span>
-      <Select :model-value="String(selectedLimit ?? 25)" @update="handleLimitChange">
-        <SelectTrigger class="w-fit">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="10">
-            10
-          </SelectItem>
-          <SelectItem value="25">
-            25
-          </SelectItem>
-          <SelectItem value="50">
-            50
-          </SelectItem>
-          <SelectItem value="100">
-            100
-          </SelectItem>
-        </SelectContent>
-      </Select>
+  <div class="flex items-center justify-between px-2">
+    <div class="flex-1">
+      <div class="flex items-center space-x-2">
+        <p class="text-sm font-medium">
+          Rows per page
+        </p>
+        <Select
+          :model-value="String(selectedLimit ?? 25)"
+          @update:model-value="(v) => handleLimitChange(v as string)"
+        >
+          <SelectTrigger class="h-8 w-[70px]">
+            <SelectValue :placeholder="String(selectedLimit ?? 25)" />
+          </SelectTrigger>
+          <SelectContent side="top">
+            <SelectItem v-for="pageSize in [10, 25, 50, 100]" :key="pageSize" :value="`${pageSize}`">
+              {{ pageSize }}
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
+    <div class="flex items-center space-x-6 lg:space-x-8">
+      <div class="flex w-[100px] items-center justify-center text-sm font-medium">
+        Page {{ localPage }} of
+        {{ maxPage }}
+      </div>
+      <div class="flex items-center space-x-2">
+        <Button
+          variant="outline"
+          class="hidden h-8 w-8 p-0 lg:flex"
+          :disabled="localPage === 1"
+          @click="handlePageChange(1)"
+        >
+          <span class="sr-only">Go to first page</span>
+          <ChevronsLeft class="h-4 w-4" />
+        </Button>
+        <Button
+          variant="outline"
+          class="h-8 w-8 p-0"
+          :disabled="localPage === 1"
+          @click="handlePageChange(localPage - 1)"
+        >
+          <span class="sr-only">Go to previous page</span>
+          <ChevronLeft class="h-4 w-4" />
+        </Button>
+        <Button
+          variant="outline"
+          class="h-8 w-8 p-0"
+          :disabled="localPage === maxPage"
+          @click="handlePageChange(localPage + 1)"
+        >
+          <span class="sr-only">Go to next page</span>
+          <ChevronRight class="h-4 w-4" />
+        </Button>
+        <Button
+          variant="outline"
+          class="hidden h-8 w-8 p-0 lg:flex"
+          :disabled="localPage === maxPage"
+          @click="handlePageChange(maxPage)"
+        >
+          <span class="sr-only">Go to last page</span>
+          <ChevronsRight class="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   </div>
 </template>
