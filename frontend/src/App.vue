@@ -33,19 +33,21 @@ import {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem class="hidden md:block">
-              <BreadcrumbLink href="#">
-                All Inboxes
+              <BreadcrumbLink as-child>
+                <RouterLink to="/tickets">
+                  Tickets
+                </RouterLink>
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator class="hidden md:block" />
             <BreadcrumbItem>
-              <BreadcrumbPage>Inbox</BreadcrumbPage>
+              <BreadcrumbPage>#7</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </header>
 
-      <div class="">
+      <div class="m-4">
         <RouterView />
       </div>
     </SidebarInset>

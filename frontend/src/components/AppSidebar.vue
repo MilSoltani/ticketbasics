@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BookOpen, Bot, Command, Settings2, SquareTerminal } from 'lucide-vue-next';
+import { BookOpen, Ticket, Users } from 'lucide-vue-next';
 import { h, ref } from 'vue';
 
 import type { SidebarProps } from '@/components/ui/sidebar';
@@ -33,9 +33,9 @@ const data = {
   },
   navMain: [
     {
-      title: 'Playground',
+      title: 'Tickets',
       url: '#',
-      icon: SquareTerminal,
+      icon: Ticket,
       isActive: true,
       items: [
         {
@@ -53,9 +53,9 @@ const data = {
       ],
     },
     {
-      title: 'Models',
+      title: 'Knowledgebase',
       url: '#',
-      icon: Bot,
+      icon: BookOpen,
       items: [
         {
           title: 'Genesis',
@@ -72,9 +72,9 @@ const data = {
       ],
     },
     {
-      title: 'Documentation',
+      title: 'Groups',
       url: '#',
-      icon: BookOpen,
+      icon: Users,
       items: [
         {
           title: 'Introduction',
@@ -90,29 +90,6 @@ const data = {
         },
         {
           title: 'Changelog',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Settings',
-      url: '#',
-      icon: Settings2,
-      items: [
-        {
-          title: 'General',
-          url: '#',
-        },
-        {
-          title: 'Team',
-          url: '#',
-        },
-        {
-          title: 'Billing',
-          url: '#',
-        },
-        {
-          title: 'Limits',
           url: '#',
         },
       ],
@@ -142,8 +119,8 @@ const { setOpen } = useSidebar();
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" as-child class="md:h-8 md:p-0">
               <a href="#">
-                <div class="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <Command class="size-4" />
+                <div class="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg font-extrabold">
+                  tb
                 </div>
                 <div class="grid flex-1 text-left text-sm leading-tight">
                   <span class="truncate font-medium">Acme Inc</span>

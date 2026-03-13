@@ -4,12 +4,6 @@ import { useRouter } from 'vue-router';
 
 import NewTicketDialog from '@/components/tickets/NewTicketDialog.vue';
 import Button from '@/components/ui/button/Button.vue';
-import Card from '@/components/ui/card/Card.vue';
-import CardContent from '@/components/ui/card/CardContent.vue';
-import CardDescription from '@/components/ui/card/CardDescription.vue';
-import CardFooter from '@/components/ui/card/CardFooter.vue';
-import CardHeader from '@/components/ui/card/CardHeader.vue';
-import CardTitle from '@/components/ui/card/CardTitle.vue';
 import DropdownMenu from '@/components/ui/dropdown-menu/DropdownMenu.vue';
 import DropdownMenuContent from '@/components/ui/dropdown-menu/DropdownMenuContent.vue';
 import DropdownMenuItem from '@/components/ui/dropdown-menu/DropdownMenuItem.vue';
@@ -33,23 +27,12 @@ const router = useRouter();
 </script>
 
 <template>
-  <Card class="shadow-none w-full">
-    <CardHeader>
-      <div class="flex justify-between">
-        <div>
-          <CardTitle class="mb-2">
-            Tickets
-          </CardTitle>
-          <CardDescription>List of tickets</CardDescription>
-        </div>
+  <div class="w-full">
+    <div class="mb-2">
+      <NewTicketDialog />
+    </div>
 
-        <div class="justify-self-end">
-          <NewTicketDialog />
-        </div>
-      </div>
-    </CardHeader>
-
-    <CardContent>
+    <div>
       <div v-if="isLoading">
         Loading...
       </div>
@@ -62,7 +45,7 @@ const router = useRouter();
 
       <div v-else class="border rounded-lg">
         <Table>
-          <TableHeader>
+          <TableHeader class="bg-muted sticky top-0 z-10">
             <TableRow>
               <TableHead class="font-bold w-12">
                 Id
@@ -122,9 +105,9 @@ const router = useRouter();
           </TableBody>
         </Table>
       </div>
-    </CardContent>
-    <CardFooter>
+    </div>
+    <div>
       aa
-    </CardFooter>
-  </Card>
+    </div>
+  </div>
 </template>
