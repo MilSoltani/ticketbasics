@@ -1,20 +1,53 @@
 <script setup lang="ts">
-import 'vue-sonner/style.css';
-
-import { Toaster } from '@/components/ui/sonner';
-
-import AppHeader from './components/AppHeader.vue';
+import AppSidebar from '@/components/AppSidebar.vue';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import { Separator } from '@/components/ui/separator';
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from '@/components/ui/sidebar';
 </script>
 
 <template>
-  <Toaster position="bottom-right" />
+  <SidebarProvider
+    :style="{
+      '--sidebar-width': '350px',
+    }"
+  >
+    <AppSidebar />
+    <SidebarInset>
+      <header class="bg-background sticky top-0 flex shrink-0 items-center gap-2 border-b p-4">
+        <SidebarTrigger class="-ml-1" />
+        <Separator
+          orientation="vertical"
+          class="mr-2 data-[orientation=vertical]:h-4"
+        />
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem class="hidden md:block">
+              <BreadcrumbLink href="#">
+                All Inboxes
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator class="hidden md:block" />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Inbox</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </header>
 
-  <AppHeader />
-
-  <main class="pt-4 mx-auto flex max-w-6xl items-center justify-between px-4">
-    <RouterView />
-  </main>
+      <div class="">
+        <RouterView />
+      </div>
+    </SidebarInset>
+  </SidebarProvider>
 </template>
-
-<style scoped>
-</style>
