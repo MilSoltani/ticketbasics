@@ -79,7 +79,7 @@ const router = useRouter();
       </div>
     </div>
 
-    <div v-if="pagination" class="my-2">
+    <div v-if="tickets && tickets.length > 0 && pagination" class="my-2">
       <TablePaginator :pagination="pagination" @set-query="setQuery" />
     </div>
   </div>
