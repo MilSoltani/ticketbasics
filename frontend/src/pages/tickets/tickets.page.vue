@@ -2,7 +2,7 @@
 import { MoreHorizontal } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
 
-import NewTicketDialog from '@/components/NewTicketDialog.vue';
+import NewTicketDialog from '@/components/tickets/NewTicketDialog.vue';
 import Button from '@/components/ui/button/Button.vue';
 import Card from '@/components/ui/card/Card.vue';
 import CardContent from '@/components/ui/card/CardContent.vue';
