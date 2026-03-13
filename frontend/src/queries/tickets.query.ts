@@ -1,18 +1,25 @@
 import type { Ticket } from '@ticketbasics/zod-schemas';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
+import { computed } from 'vue';
 
 import { createTicket, getAllTickets, getTicketById, updateTicket } from '@/apis/tickets.api';
 
 export function useGetAllTickets() {
-  const { data, isLoading, error, isFetching } = useQuery({
+  const { data: response, isLoading, error, isFetching } = useQuery({
     queryKey: ['tickets', 'all'],
     queryFn: getAllTickets,
     staleTime: 1000 * 60 * 5,
     retry: 2,
   });
 
-  return { data, isLoading, error, isFetching };
+  return {
+    data: computed(() => response.value?.data),
+    pagination: computed(() => response.value?.pagination),
+    isLoading,
+    error,
+    isFetching,
+  };
 }
 
 export function useGetTicketById(id: number) {

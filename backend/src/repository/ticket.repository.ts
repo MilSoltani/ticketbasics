@@ -1,7 +1,8 @@
+import type { TicketQuery } from '@ticketbasics/zod-schemas';
 import type { InferInsertModel } from 'drizzle-orm';
 
 import { TicketCreateSchema, TicketSchema } from '@ticketbasics/zod-schemas';
-import { eq } from 'drizzle-orm';
+import { and, asc, between, count, desc, eq, gte, like, lte } from 'drizzle-orm';
 
 import { ticketsTable } from '@/database/schema';
 import { db } from '@/index';
@@ -9,12 +10,70 @@ import { db } from '@/index';
 type InsertTicket = InferInsertModel<typeof ticketsTable>;
 
 export const TicketRepository = {
-  async getAll() {
-    const result = await db
-      .select()
-      .from(ticketsTable);
+  async getAll(query: TicketQuery) {
+    const conditions = [];
 
-    return TicketSchema.array().parse(result);
+    if (query.subject) {
+      conditions.push(like(ticketsTable.subject, `%${query.subject}%`));
+    }
+
+    if (query.status) {
+      conditions.push(eq(ticketsTable.status, query.status));
+    }
+
+    if (query.priority) {
+      conditions.push(eq(ticketsTable.priority, query.priority));
+    }
+
+    if (query.createdFrom && query.createdTo) {
+      conditions.push(between(ticketsTable.createdAt, query.createdFrom, query.createdTo));
+    }
+    else if (query.createdFrom) {
+      conditions.push(gte(ticketsTable.createdAt, query.createdFrom));
+    }
+    else if (query.createdTo) {
+      conditions.push(lte(ticketsTable.createdAt, query.createdTo));
+    }
+
+    const sortMap = {
+      subject: ticketsTable.subject,
+      status: ticketsTable.status,
+      priority: ticketsTable.priority,
+      createdAt: ticketsTable.createdAt,
+    } as const;
+
+    const sortColumn = query.sort ? sortMap[query.sort] : ticketsTable.createdAt;
+
+    const orderBy = query.order === 'asc'
+      ? asc(sortColumn)
+      : desc(sortColumn);
+
+    const limit = query.limit ?? 25;
+    const offset = query.offset ?? 0;
+
+    const data = await db
+      .select()
+      .from(ticketsTable)
+      .where(and(...conditions))
+      .orderBy(orderBy)
+      .limit(limit)
+      .offset(offset);
+
+    const [{ total }] = await db
+      .select({ total: count() })
+      .from(ticketsTable)
+      .where(and(...conditions));
+
+    return {
+      data: TicketSchema.array().parse(data),
+      pagination: {
+        total: Number(total),
+        limit,
+        offset,
+        page: Math.floor(offset / limit) + 1,
+        pages: Math.ceil(Number(total) / limit),
+      },
+    };
   },
 
   async getById(id: number) {

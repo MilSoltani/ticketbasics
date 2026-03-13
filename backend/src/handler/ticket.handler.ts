@@ -1,14 +1,16 @@
 import { zValidator } from '@hono/zod-validator';
-import { TicketCreateSchema, TicketUpdateSchema } from '@ticketbasics/zod-schemas';
+import { TicketCreateSchema, TicketQuerySchema, TicketUpdateSchema } from '@ticketbasics/zod-schemas';
 import { Hono } from 'hono';
 
 import { TicketRepository } from '@/repository/ticket.repository';
 
 const ticketHandler = new Hono()
-  .get('/', async (c) => {
-    const tickets = await TicketRepository.getAll();
+  .get('/', zValidator('query', TicketQuerySchema), async (c) => {
+    const query = c.req.valid('query');
 
-    return c.json({ data: tickets });
+    const result = await TicketRepository.getAll(query);
+
+    return c.json(result);
   })
   .get('/:id', async (c) => {
     const id = Number(c.req.param('id'));

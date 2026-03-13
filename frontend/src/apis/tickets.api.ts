@@ -1,9 +1,9 @@
-import type { Ticket, TicketCreatePayload, TicketUpdatePayload } from '@ticketbasics/zod-schemas';
+import type { Pagination, Ticket, TicketCreatePayload, TicketUpdatePayload } from '@ticketbasics/zod-schemas';
 
 import { ticketsClient } from '@ticketbasics/backend/client';
 
-export async function getAllTickets(): Promise<Ticket[]> {
-  const response = await ticketsClient.index.$get();
+export async function getAllTickets(): Promise<{ data: Ticket[]; pagination: Pagination }> {
+  const response = await ticketsClient.index.$get({ query: {} });
 
   if (!response.ok) {
     throw new Error(`API error: ${response.statusText}`);
@@ -14,8 +14,14 @@ export async function getAllTickets(): Promise<Ticket[]> {
   if (!Array.isArray(json.data)) {
     throw new TypeError('Invalid response: expected array of tickets');
   }
+  else if (!json.pagination) {
+    throw new TypeError('Invalid response: expected pagination');
+  }
 
-  return json.data;
+  return {
+    data: json.data,
+    pagination: json.pagination,
+  };
 }
 
 export async function getTicketById(id: number): Promise<Ticket> {
