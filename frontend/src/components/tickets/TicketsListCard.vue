@@ -34,7 +34,7 @@ const router = useRouter();
         Fetching...
       </div>
 
-      <div v-else class="border rounded-lg">
+      <div v-else class="border-b">
         <Table class="table-fixed w-full">
           <TableHeader class="bg-muted sticky top-0 z-10">
             <TableRow>
@@ -65,6 +65,10 @@ const router = useRouter();
 
               <TableCell class="truncate max-w-0 py-4 font-bold">
                 {{ ticket.subject }}
+
+                <div class="text-muted-foreground text-sm">
+                  username - {{ ticket.createdAt }}
+                </div>
               </TableCell>
 
               <TableCell class="py-4">
