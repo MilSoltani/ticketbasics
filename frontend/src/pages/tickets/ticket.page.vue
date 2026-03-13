@@ -2,14 +2,14 @@
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
-import TicketEditForm from '@/components/tickets/TicketEditForm.vue';
+import TicketEditCard from '@/components/tickets/TicketEditCard.vue';
 
 const route = useRoute();
 const ticketId = computed(() => Number(route.params.id));
 </script>
 
 <template>
-  <TicketEditForm :ticket-id="ticketId" />
+  <TicketEditCard :ticket-id="ticketId" />
 </template>
 
 <style scoped>
