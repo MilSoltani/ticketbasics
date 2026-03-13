@@ -1,9 +1,24 @@
-import type { Pagination, Ticket, TicketCreatePayload, TicketUpdatePayload } from '@ticketbasics/zod-schemas';
+import type { Pagination, Ticket, TicketCreatePayload, TicketQuery, TicketUpdatePayload } from '@ticketbasics/zod-schemas';
 
 import { ticketsClient } from '@ticketbasics/backend/client';
 
-export async function getAllTickets(): Promise<{ data: Ticket[]; pagination: Pagination }> {
-  const response = await ticketsClient.index.$get({ query: {} });
+export async function getAllTickets(query: Partial<TicketQuery>): Promise<{ data: Ticket[]; pagination: Pagination }> {
+  // Convert Date and number fields to string as required by the API
+  const serializedQuery: Record<string, any> = { ...query };
+  if (serializedQuery.createdFrom instanceof Date) {
+    serializedQuery.createdFrom = serializedQuery.createdFrom.toISOString();
+  }
+  if (serializedQuery.createdTo instanceof Date) {
+    serializedQuery.createdTo = serializedQuery.createdTo.toISOString();
+  }
+  if (typeof serializedQuery.limit === 'number') {
+    serializedQuery.limit = String(serializedQuery.limit);
+  }
+  if (typeof serializedQuery.offset === 'number') {
+    serializedQuery.offset = String(serializedQuery.offset);
+  }
+
+  const response = await ticketsClient.index.$get({ query: serializedQuery });
 
   if (!response.ok) {
     throw new Error(`API error: ${response.statusText}`);
