@@ -67,7 +67,7 @@ const onSubmit = handleSubmit((updatedTicket: TicketUpdatePayload) => {
 </script>
 
 <template>
-  <Card class="shadow-none w-full">
+  <Card class="shadow-none w-full rounded-none">
     <form @submit.prevent="onSubmit">
       <CardHeader>
         <div class="flex justify-between">
@@ -79,7 +79,7 @@ const onSubmit = handleSubmit((updatedTicket: TicketUpdatePayload) => {
           </div>
 
           <div class="justify-self-end">
-            <Button variant="default" size="sm" type="submit" :disabled="isPending">
+            <Button variant="outline" size="sm" type="submit" :disabled="isPending">
               <Save :size="16" /> Update
             </Button>
           </div>
