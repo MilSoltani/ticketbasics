@@ -11,6 +11,7 @@ import TableRow from '@/components/ui/table/TableRow.vue';
 import { useGetAllTickets } from '@/queries/tickets.query';
 
 import TablePaginator from '../TablePaginator.vue';
+import TicketFilterPopover from './TicketFilterPopover.vue';
 
 const { data: tickets, pagination, setQuery, isLoading, error, isFetching } = useGetAllTickets();
 
@@ -19,7 +20,8 @@ const router = useRouter();
 
 <template>
   <div class="w-full">
-    <div class="mb-2">
+    <div class="mb-2 flex justify-between">
+      <TicketFilterPopover />
       <NewTicketDialog />
     </div>
 
