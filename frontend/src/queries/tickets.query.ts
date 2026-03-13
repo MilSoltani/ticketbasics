@@ -1,4 +1,4 @@
-import type { Pagination, Ticket, TicketQuery } from '@ticketbasics/zod-schemas';
+import type { GetAllQueryResponse, Ticket, TicketQuery } from '@ticketbasics/zod-schemas';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 import { computed, ref } from 'vue';
@@ -14,12 +14,10 @@ export function useGetAllTickets(initialQuery: Partial<TicketQuery> = {}) {
     ...initialQuery,
   });
 
-  interface TicketsResponse { data: Ticket[]; pagination?: Pagination }
-
-  const { data: response, isLoading, error, isFetching } = useQuery<TicketsResponse>({
-    queryKey: ['tickets', 'all', query],
+  const { data: response, isLoading, error, isFetching } = useQuery<GetAllQueryResponse>({
+    queryKey: computed(() => ['tickets', 'all', query.value]),
     queryFn: () => getAllTickets(query.value),
-    staleTime: 0,
+    staleTime: 1000 * 60 * 5,
     retry: 2,
   });
 
@@ -28,7 +26,6 @@ export function useGetAllTickets(initialQuery: Partial<TicketQuery> = {}) {
   }
 
   return {
-    query,
     setQuery,
     data: computed(() => response.value?.data),
     pagination: computed(() => response.value?.pagination),

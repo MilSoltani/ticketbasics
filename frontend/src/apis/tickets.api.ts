@@ -2,31 +2,14 @@ import type { Pagination, Ticket, TicketCreatePayload, TicketQuery, TicketUpdate
 
 import { ticketsClient } from '@ticketbasics/backend/client';
 
-function serializeTicketQuery(query: Partial<TicketQuery>): Record<string, string> {
-  const { createdFrom, createdTo, limit, offset, ...rest } = query;
-
-  const serialized: Record<string, string> = { ...rest } as any;
-
-  if (createdFrom instanceof Date) {
-    serialized.createdFrom = createdFrom.toISOString();
-  }
-  if (createdTo instanceof Date) {
-    serialized.createdTo = createdTo.toISOString();
-  }
-  if (typeof limit === 'number') {
-    serialized.limit = String(limit);
-  }
-  if (typeof offset === 'number') {
-    serialized.offset = String(offset);
-  }
-
-  return serialized;
-}
+import { serializeQuery } from '@/utils/serialize-query.util';
 
 export async function getAllTickets(query: Partial<TicketQuery>): Promise<{ data: Ticket[]; pagination: Pagination }> {
-  const serializedQuery = serializeTicketQuery(query);
+  const serializedQuery = serializeQuery(query);
 
-  const response = await ticketsClient.index.$get({ query: serializedQuery });
+  const response = await ticketsClient.index.$get({
+    query: serializedQuery,
+  });
 
   if (!response.ok) {
     throw new Error(`API error: ${response.statusText}`);
