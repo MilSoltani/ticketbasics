@@ -13,6 +13,10 @@ export const TicketRepository = {
   async getAll(query: TicketQuery) {
     const conditions = [];
 
+    if (query.id) {
+      conditions.push(eq(ticketsTable.id, query.id));
+    }
+
     if (query.subject) {
       conditions.push(like(ticketsTable.subject, `%${query.subject}%`));
     }

@@ -25,6 +25,7 @@ export const TicketCreateSchema = TicketSchema.omit({
 export const TicketUpdateSchema = TicketCreateSchema.partial();
 
 export const TicketQuerySchema = z.object({
+  id: z.int().optional(),
   subject: z.string().optional(),
   status: TicketStatusEnum.optional(),
   priority: TicketPriorityEnum.optional(),
