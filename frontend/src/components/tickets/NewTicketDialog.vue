@@ -8,6 +8,7 @@ import { ErrorMessage, useForm } from 'vee-validate';
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
 
+import Button from '@/components/ui/button/Button.vue';
 import {
   Dialog,
   DialogClose,
@@ -27,8 +28,6 @@ import SelectTrigger from '@/components/ui/select/SelectTrigger.vue';
 import SelectValue from '@/components/ui/select/SelectValue.vue';
 import Textarea from '@/components/ui/textarea/Textarea.vue';
 import { useCreateTicket } from '@/queries/tickets.query';
-
-import Button from './ui/button/Button.vue';
 
 const dialogOpen = ref(false);
 
