@@ -10,7 +10,9 @@ import TableHeader from '@/components/ui/table/TableHeader.vue';
 import TableRow from '@/components/ui/table/TableRow.vue';
 import { useGetAllTickets } from '@/queries/tickets.query';
 
-const { data: tickets, isLoading, error, isFetching } = useGetAllTickets();
+import TablePaginator from '../TablePaginator.vue';
+
+const { data: tickets, pagination, setQuery, isLoading, error, isFetching } = useGetAllTickets();
 
 const router = useRouter();
 </script>
@@ -76,8 +78,9 @@ const router = useRouter();
         </Table>
       </div>
     </div>
-    <div>
-      aa
+
+    <div v-if="pagination" class="my-2">
+      <TablePaginator :pagination="pagination" @set-query="setQuery" />
     </div>
   </div>
 </template>

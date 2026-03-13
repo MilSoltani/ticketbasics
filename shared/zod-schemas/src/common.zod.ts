@@ -8,6 +8,6 @@ export const PaginationSchema = z.object({
   pages: z.number().int().min(0),
 });
 
-export type Pagination = z.infer<typeof PaginationSchema>;
+export type PaginationType = z.infer<typeof PaginationSchema>;
 
-export interface GetAllQueryResponse { data: any[]; pagination: Pagination }
+export interface GetAllQueryResponse { data: any[]; pagination: PaginationType }

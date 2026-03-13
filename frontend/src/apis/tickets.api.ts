@@ -1,10 +1,10 @@
-import type { Pagination, Ticket, TicketCreatePayload, TicketQuery, TicketUpdatePayload } from '@ticketbasics/zod-schemas';
+import type { PaginationType, Ticket, TicketCreatePayload, TicketQuery, TicketUpdatePayload } from '@ticketbasics/zod-schemas';
 
 import { ticketsClient } from '@ticketbasics/backend/client';
 
 import { serializeQuery } from '@/utils/serialize-query.util';
 
-export async function getAllTickets(query: Partial<TicketQuery>): Promise<{ data: Ticket[]; pagination: Pagination }> {
+export async function getAllTickets(query: Partial<TicketQuery>): Promise<{ data: Ticket[]; pagination: PaginationType }> {
   const serializedQuery = serializeQuery(query);
 
   const response = await ticketsClient.index.$get({
