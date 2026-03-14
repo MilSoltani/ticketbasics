@@ -27,8 +27,8 @@ export const TicketUpdateSchema = TicketCreateSchema.partial();
 export const TicketQuerySchema = z.object({
   id: z.coerce.number().int().optional(),
   subject: z.string().optional(),
-  status: TicketStatusEnum.optional(),
-  priority: TicketPriorityEnum.optional(),
+  statusIn: z.array(TicketStatusEnum).default([]),
+  priorityIn: z.array(TicketPriorityEnum).default([]),
   createdFrom: z.coerce.date().optional(),
   createdTo: z.coerce.date().optional(),
   sort: z.enum(['createdAt', 'priority', 'status', 'subject']).optional(),

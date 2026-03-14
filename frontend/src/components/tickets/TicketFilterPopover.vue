@@ -14,47 +14,41 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import Select from '@/components/ui/select/Select.vue';
-import SelectContent from '@/components/ui/select/SelectContent.vue';
-import SelectItem from '@/components/ui/select/SelectItem.vue';
-import SelectTrigger from '@/components/ui/select/SelectTrigger.vue';
-import SelectValue from '@/components/ui/select/SelectValue.vue';
 
 import DateSelector from '../form/DateSelector.vue';
+import MultiSelector from '../form/MultiSelector.vue';
 
 const emit = defineEmits<{
   (e: 'setQuery', patch: Partial<TicketQuery>): void;
 }>();
 
-const { defineField, resetForm, handleSubmit } = useForm({});
+const { defineField, resetForm } = useForm({});
 
 const [id, idAttrs] = defineField('id');
 const [subject, subjectAttrs] = defineField('subject');
-const [priority, priorityAttrs] = defineField('priority');
-const [status, statusAttrs] = defineField('status');
+const [priorityIn, priorityInAttrs] = defineField('priority');
+const [statusIn, statusInAttrs] = defineField('status');
 const [createdFrom, createdFromAttrs] = defineField('createdFrom');
 const [createdTo, createdToAttrs] = defineField('createdTo');
 
-const handleChange = handleSubmit((changes: Partial<TicketQuery>) => {
+const debouncedHandleChange = useDebounceFn(() => {
   emit('setQuery', {
-    id: changes.id,
-    subject: changes.subject,
-    priority: changes.priority,
-    status: changes.status,
-    createdFrom: changes.createdFrom,
-    createdTo: changes.createdTo,
+    id: id.value,
+    subject: subject.value,
+    priorityIn: priorityIn.value,
+    statusIn: statusIn.value,
+    createdFrom: createdFrom.value,
+    createdTo: createdTo.value,
   });
-});
-
-const debouncedHandleChange = useDebounceFn(handleChange, 1000);
+}, 1000);
 
 function handleClear() {
   resetForm();
   emit('setQuery', {
     id: undefined,
     subject: undefined,
-    priority: undefined,
-    status: undefined,
+    priorityIn: [],
+    statusIn: [],
     createdFrom: undefined,
     createdTo: undefined,
   });
@@ -69,8 +63,8 @@ function handleClear() {
       </Button>
     </PopoverTrigger>
 
-    <PopoverContent align="start" class="w-fit">
-      <form @change.prevent="handleChange">
+    <PopoverContent align="start" class="w-150">
+      <form>
         <div class="flex items-center justify-between mb-6">
           <div class="space-y-1">
             <h4 class="font-medium leading-none flex items-center gap-2">
@@ -85,7 +79,7 @@ function handleClear() {
           </Button>
         </div>
 
-        <div class="grid grid-cols-2 gap-x-12 gap-y-4 items-start">
+        <div class="grid grid-cols-2 gap-x-12 gap-y-4 items-start mb-2">
           <div class="grid gap-4">
             <div class="grid grid-rows-1 gap-3 items-center">
               <Label for="id" class="text-right">Id:</Label>
@@ -99,30 +93,14 @@ function handleClear() {
 
             <div class="grid grid-rows-1 gap-3 items-center">
               <Label for="priority" class="text-right">Priority:</Label>
-              <Select id="priority" v-model="priority" v-bind="priorityAttrs">
-                <SelectTrigger class="h-8">
-                  <SelectValue placeholder="Select Priority" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem v-for="opt in TicketPriorityEnum.options" :key="opt" :value="opt">
-                    {{ opt }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+
+              <MultiSelector v-model="priorityIn" v-bind="priorityInAttrs" title="Priority" :options="TicketPriorityEnum.options" @update:model-value="(value) => { priorityIn = value; debouncedHandleChange(); }" />
             </div>
 
             <div class="grid grid-rows-1 gap-3 items-center">
               <Label for="status" class="text-right">Status:</Label>
-              <Select id="status" v-model="status" v-bind="statusAttrs">
-                <SelectTrigger class="h-8">
-                  <SelectValue placeholder="Select Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem v-for="opt in TicketStatusEnum.options" :key="opt" :value="opt">
-                    {{ opt }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+
+              <MultiSelector v-model="statusIn" v-bind="statusInAttrs" title="Status" :options="TicketStatusEnum.options" @update:model-value="(value) => { statusIn = value; debouncedHandleChange(); }" />
             </div>
           </div>
 
