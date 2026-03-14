@@ -9,6 +9,10 @@ export function serializeQuery<T extends object>(query: T): Record<string, strin
     if (value instanceof Date) {
       params[key] = value.toISOString();
     }
+    else if (Array.isArray(value)) {
+      if (value.length > 0)
+        params[key] = value.join(',');
+    }
     else {
       params[key] = String(value);
     }

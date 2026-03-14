@@ -27,8 +27,14 @@ export const TicketUpdateSchema = TicketCreateSchema.partial();
 export const TicketQuerySchema = z.object({
   id: z.coerce.number().int().optional(),
   subject: z.string().optional(),
-  statusIn: z.array(TicketStatusEnum).default([]),
-  priorityIn: z.array(TicketPriorityEnum).default([]),
+  statusIn: z.union([z.string(), z.array(z.string())])
+    .transform(val => typeof val === 'string' ? (val === '' ? [] : val.split(',')) : val)
+    .pipe(z.array(TicketStatusEnum))
+    .default([]),
+  priorityIn: z.union([z.string(), z.array(z.string())])
+    .transform(val => typeof val === 'string' ? (val === '' ? [] : val.split(',')) : val)
+    .pipe(z.array(TicketPriorityEnum))
+    .default([]),
   createdFrom: z.coerce.date().optional(),
   createdTo: z.coerce.date().optional(),
   sort: z.enum(['createdAt', 'priority', 'status', 'subject']).optional(),
