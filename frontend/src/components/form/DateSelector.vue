@@ -36,7 +36,7 @@ const date = computed<CalendarDate | undefined>({
       <Button
         variant="outline"
         :class="cn(
-          'w-[180px] justify-start text-left font-normal',
+          'w-full h-8 justify-start text-left font-normal',
           !date && 'text-muted-foreground',
         )"
       >

@@ -31,7 +31,7 @@ const createdTo = ref<string>();
       </Button>
     </PopoverTrigger>
 
-    <PopoverContent class="w-fit">
+    <PopoverContent align="start" class="w-fit">
       <div class="flex items-center justify-between mb-6">
         <div class="space-y-1">
           <h4 class="font-medium leading-none flex items-center gap-2">
@@ -41,28 +41,28 @@ const createdTo = ref<string>();
             Filtering the rows in the table:
           </p>
         </div>
-        <Button variant="ghost" size="icon" class="h-8 w-8">
-          <X :size="18" />
+        <Button variant="outline" size="sm">
+          <X :size="18" /> Clear
         </Button>
       </div>
 
       <div class="grid grid-cols-2 gap-x-12 gap-y-4 items-start">
         <div class="grid gap-4">
-          <div class="grid grid-cols-3 items-center">
-            <Label for="id" class="text-right">Id</Label>
-            <Input id="id" class="col-span-2 h-8" />
+          <div class="grid grid-rows-1 gap-3 items-center">
+            <Label for="id" class="text-right">Id:</Label>
+            <Input id="id" type="number" class=" h-8" />
           </div>
 
-          <div class="grid grid-cols-3 items-center">
-            <Label for="subject" class="text-right">Subject</Label>
-            <Input id="subject" class="col-span-2 h-8" />
+          <div class="grid grid-rows-1 gap-3 items-center">
+            <Label for="subject" class="text-right">Subject:</Label>
+            <Input id="subject" class=" h-8" />
           </div>
 
-          <div class="grid grid-cols-3 items-center">
-            <Label for="priority" class="text-right">Priority</Label>
+          <div class="grid grid-rows-1 gap-3 items-center">
+            <Label for="priority" class="text-right">Priority:</Label>
             <Select id="priority">
-              <SelectTrigger class="col-span-2 h-8">
-                <SelectValue placeholder="Select" />
+              <SelectTrigger class="h-8">
+                <SelectValue placeholder="Select Priority" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem v-for="opt in TicketPriorityEnum.options" :key="opt" :value="opt">
@@ -72,11 +72,11 @@ const createdTo = ref<string>();
             </Select>
           </div>
 
-          <div class="grid grid-cols-3 items-center">
-            <Label for="status" class="text-right">Status</Label>
+          <div class="grid grid-rows-1 gap-3 items-center">
+            <Label for="status" class="text-right">Status:</Label>
             <Select id="status">
-              <SelectTrigger class="col-span-2 h-8">
-                <SelectValue placeholder="Select" />
+              <SelectTrigger class="h-8">
+                <SelectValue placeholder="Select Status" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem v-for="opt in TicketStatusEnum.options" :key="opt" :value="opt">
@@ -88,15 +88,15 @@ const createdTo = ref<string>();
         </div>
 
         <div class="grid gap-4">
-          <div class="grid grid-cols-3 items-center">
-            <Label class="text-right">From</Label>
-            <div class="col-span-2">
+          <div class="grid grid-rows-1 gap-3 items-center">
+            <Label class="text-right">Created from:</Label>
+            <div class="">
               <DateSelector v-model:date="createdFrom" />
             </div>
           </div>
-          <div class="grid grid-cols-3 items-center">
-            <Label class="text-right">To</Label>
-            <div class="col-span-2">
+          <div class="grid grid-rows-1 gap-3 items-center">
+            <Label class="text-right">Created to:</Label>
+            <div class="">
               <DateSelector v-model:date="createdTo" />
             </div>
           </div>
