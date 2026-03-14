@@ -44,6 +44,18 @@ const handleChange = handleSubmit((changes: Partial<TicketQuery>) => {
     createdTo: changes.createdTo,
   });
 });
+
+function handleClear() {
+  resetForm();
+  emit('setQuery', {
+    id: undefined,
+    subject: undefined,
+    priority: undefined,
+    status: undefined,
+    createdFrom: undefined,
+    createdTo: undefined,
+  });
+}
 </script>
 
 <template>
@@ -65,7 +77,7 @@ const handleChange = handleSubmit((changes: Partial<TicketQuery>) => {
               Filtering the rows in the table:
             </p>
           </div>
-          <Button variant="outline" size="sm" @click.prevent="resetForm()">
+          <Button type="button" variant="outline" size="sm" @click.prevent="handleClear">
             <X :size="18" /> Clear
           </Button>
         </div>
@@ -74,12 +86,12 @@ const handleChange = handleSubmit((changes: Partial<TicketQuery>) => {
           <div class="grid gap-4">
             <div class="grid grid-rows-1 gap-3 items-center">
               <Label for="id" class="text-right">Id:</Label>
-              <Input id="id" v-model="id" v-bind="idAttrs" type="number" class=" h-8" />
+              <Input id="id" v-model="id" v-bind="idAttrs" type="number" class=" h-8" @input="handleChange" />
             </div>
 
             <div class="grid grid-rows-1 gap-3 items-center">
               <Label for="subject" class="text-right">Subject:</Label>
-              <Input id="subject" v-model="subject" v-bind="subjectAttrs" class=" h-8" />
+              <Input id="subject" v-model="subject" v-bind="subjectAttrs" class=" h-8" @input="handleChange" />
             </div>
 
             <div class="grid grid-rows-1 gap-3 items-center">
