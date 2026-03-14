@@ -18,9 +18,17 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-const props = defineProps<{
-  pagination: PaginationType;
-}>();
+const props = withDefaults(defineProps<{
+  pagination?: PaginationType;
+}>(), {
+  pagination: () => ({
+    total: 0,
+    limit: 25,
+    offset: 0,
+    page: 1,
+    pages: 1,
+  }),
+});
 
 const emit = defineEmits<{
   (e: 'setQuery', patch: { offset?: number; limit?: number }): void;
