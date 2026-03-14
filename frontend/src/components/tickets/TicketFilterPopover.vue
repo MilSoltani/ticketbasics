@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { TicketPriorityEnum, TicketStatusEnum } from '@ticketbasics/zod-schemas';
 import { FunnelPlus, X } from 'lucide-vue-next';
+import { ref } from 'vue';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +16,11 @@ import SelectContent from '@/components/ui/select/SelectContent.vue';
 import SelectItem from '@/components/ui/select/SelectItem.vue';
 import SelectTrigger from '@/components/ui/select/SelectTrigger.vue';
 import SelectValue from '@/components/ui/select/SelectValue.vue';
+
+import DateSelector from '../form/DateSelector.vue';
+
+const createdFrom = ref<string>();
+const createdTo = ref<string>();
 </script>
 
 <template>
@@ -24,66 +30,75 @@ import SelectValue from '@/components/ui/select/SelectValue.vue';
         <FunnelPlus :size="16" /> Table Filters
       </Button>
     </PopoverTrigger>
-    <PopoverContent class="w-80">
-      <div class="grid gap-4">
-        <div class="flex justify-between">
-          <div class="space-y-2">
-            <h4 class="font-medium leading-none flex gap-2">
-              <FunnelPlus :size="16" /> Table Filters
-            </h4>
-            <p class="text-sm text-muted-foreground">
-              Filtering the rows in the table:
-            </p>
+
+    <PopoverContent class="w-fit">
+      <div class="flex items-center justify-between mb-6">
+        <div class="space-y-1">
+          <h4 class="font-medium leading-none flex items-center gap-2">
+            <FunnelPlus :size="16" /> Table Filters
+          </h4>
+          <p class="text-sm text-muted-foreground">
+            Filtering the rows in the table:
+          </p>
+        </div>
+        <Button variant="ghost" size="icon" class="h-8 w-8">
+          <X :size="18" />
+        </Button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-x-12 gap-y-4 items-start">
+        <div class="grid gap-4">
+          <div class="grid grid-cols-3 items-center">
+            <Label for="id" class="text-right">Id</Label>
+            <Input id="id" class="col-span-2 h-8" />
           </div>
 
-          <div>
-            <Button variant="outline" size="icon">
-              <X :size="32" />
-            </Button>
+          <div class="grid grid-cols-3 items-center">
+            <Label for="subject" class="text-right">Subject</Label>
+            <Input id="subject" class="col-span-2 h-8" />
+          </div>
+
+          <div class="grid grid-cols-3 items-center">
+            <Label for="priority" class="text-right">Priority</Label>
+            <Select id="priority">
+              <SelectTrigger class="col-span-2 h-8">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem v-for="opt in TicketPriorityEnum.options" :key="opt" :value="opt">
+                  {{ opt }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div class="grid grid-cols-3 items-center">
+            <Label for="status" class="text-right">Status</Label>
+            <Select id="status">
+              <SelectTrigger class="col-span-2 h-8">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem v-for="opt in TicketStatusEnum.options" :key="opt" :value="opt">
+                  {{ opt }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
-        <div class="grid gap-2">
-          <div class="grid grid-cols-3 items-center gap-4">
-            <Label for="id">Id</Label>
-            <Input
-              id="id"
-              class="col-span-2 h-8"
-            />
-          </div>
-          <div class="grid grid-cols-3 items-center gap-4">
-            <Label for="subject">Subject</Label>
-            <Input
-              id="subject"
-              class="col-span-2 h-8"
-            />
-          </div>
-          <div class="grid grid-cols-3 items-center gap-4">
-            <Label for="priority">Priority</Label>
 
-            <Select id="priority">
-              <SelectTrigger>
-                <SelectValue placeholder="Select Priority" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem v-for="priorityOption in TicketPriorityEnum.options" :key="priorityOption" :value="priorityOption">
-                  {{ priorityOption }}
-                </SelectItem>
-              </SelectContent>
-            </Select>
+        <div class="grid gap-4">
+          <div class="grid grid-cols-3 items-center">
+            <Label class="text-right">From</Label>
+            <div class="col-span-2">
+              <DateSelector v-model:date="createdFrom" />
+            </div>
           </div>
-          <div class="grid grid-cols-3 items-center gap-4">
-            <Label for="status">Status</Label>
-
-            <Select id="status">
-              <SelectTrigger>
-                <SelectValue placeholder="Select Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem v-for="statusOption in TicketStatusEnum.options" :key="statusOption" :value="statusOption">
-                  {{ statusOption }}
-                </SelectItem>
-              </SelectContent>
-            </Select>
+          <div class="grid grid-cols-3 items-center">
+            <Label class="text-right">To</Label>
+            <div class="col-span-2">
+              <DateSelector v-model:date="createdTo" />
+            </div>
           </div>
         </div>
       </div>
