@@ -2,6 +2,7 @@
 import type { TicketQuery } from '@ticketbasics/zod-schemas';
 
 import { TicketPriorityEnum, TicketStatusEnum } from '@ticketbasics/zod-schemas';
+import { useDebounceFn } from '@vueuse/core';
 import { FunnelPlus, X } from 'lucide-vue-next';
 import { useForm } from 'vee-validate';
 
@@ -45,6 +46,8 @@ const handleChange = handleSubmit((changes: Partial<TicketQuery>) => {
   });
 });
 
+const debouncedHandleChange = useDebounceFn(handleChange, 1000);
+
 function handleClear() {
   resetForm();
   emit('setQuery', {
@@ -86,12 +89,12 @@ function handleClear() {
           <div class="grid gap-4">
             <div class="grid grid-rows-1 gap-3 items-center">
               <Label for="id" class="text-right">Id:</Label>
-              <Input id="id" v-model="id" v-bind="idAttrs" type="number" class=" h-8" @input="handleChange" />
+              <Input id="id" v-model="id" v-bind="idAttrs" type="number" class=" h-8" @input="debouncedHandleChange" />
             </div>
 
             <div class="grid grid-rows-1 gap-3 items-center">
               <Label for="subject" class="text-right">Subject:</Label>
-              <Input id="subject" v-model="subject" v-bind="subjectAttrs" class=" h-8" @input="handleChange" />
+              <Input id="subject" v-model="subject" v-bind="subjectAttrs" class=" h-8" @input="debouncedHandleChange" />
             </div>
 
             <div class="grid grid-rows-1 gap-3 items-center">
@@ -127,13 +130,13 @@ function handleClear() {
             <div class="grid grid-rows-1 gap-3 items-center">
               <Label class="text-right">Created from:</Label>
               <div class="">
-                <DateSelector :date="createdFrom" v-bind="createdFromAttrs" @update:date="(value) => { createdFrom = value; handleChange(); }" />
+                <DateSelector :date="createdFrom" v-bind="createdFromAttrs" @update:date="(value) => { createdFrom = value; debouncedHandleChange(); }" />
               </div>
             </div>
             <div class="grid grid-rows-1 gap-3 items-center">
               <Label class="text-right">Created to:</Label>
               <div class="">
-                <DateSelector :date="createdTo" v-bind="createdToAttrs" @update:date="(value) => { createdTo = value; handleChange(); }" />
+                <DateSelector :date="createdTo" v-bind="createdToAttrs" @update:date="(value) => { createdTo = value; debouncedHandleChange(); }" />
               </div>
             </div>
           </div>
