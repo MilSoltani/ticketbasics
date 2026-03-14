@@ -26,6 +26,9 @@ export const TicketUpdateSchema = TicketCreateSchema.partial();
 
 export const DEFAULT_STATUS_FILTER: TicketStatus[] = ['open', 'pending', 'working'];
 
+export const ticketSortEnum = z.enum(['subject', 'createdAt', 'priority', 'status']);
+export type TicketSortOption = z.infer<typeof ticketSortEnum>;
+
 export const TicketQuerySchema = z.object({
   id: z.coerce.number().int().optional(),
   subject: z.string().optional(),
@@ -46,7 +49,7 @@ export const TicketQuerySchema = z.object({
     .default([]),
   createdFrom: z.coerce.date().optional(),
   createdTo: z.coerce.date().optional(),
-  sort: z.enum(['createdAt', 'priority', 'status', 'subject']).optional(),
+  sort: ticketSortEnum.optional(),
   order: z.enum(['asc', 'desc']).optional(),
   limit: z.coerce.number().int().min(1).max(100).optional(),
   offset: z.coerce.number().int().min(0).optional(),

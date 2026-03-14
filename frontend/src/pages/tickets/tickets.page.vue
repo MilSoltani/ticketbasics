@@ -5,6 +5,7 @@ import TablePaginator from '@/components/TablePaginator.vue';
 import NewTicketDialog from '@/components/tickets/NewTicketDialog.vue';
 import TicketFilterPopover from '@/components/tickets/TicketFilterPopover.vue';
 import TicketsListCard from '@/components/tickets/TicketsListCard.vue';
+import TicketSorter from '@/components/tickets/TicketSorter.vue';
 import { useGetAllTickets } from '@/queries/tickets.query';
 
 const { data: tickets, pagination, setQuery, isLoading, error, isFetching } = useGetAllTickets({
@@ -14,7 +15,10 @@ const { data: tickets, pagination, setQuery, isLoading, error, isFetching } = us
 
 <template>
   <div class="mb-2 flex justify-between">
-    <TicketFilterPopover @set-query="setQuery" />
+    <div class="flex justify-start gap-2">
+      <TicketFilterPopover @set-query="setQuery" />
+      <TicketSorter @set-query="setQuery" />
+    </div>
     <NewTicketDialog />
   </div>
 
