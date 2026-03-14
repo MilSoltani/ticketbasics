@@ -115,13 +115,13 @@ const handleChange = handleSubmit((changes: Partial<TicketQuery>) => {
             <div class="grid grid-rows-1 gap-3 items-center">
               <Label class="text-right">Created from:</Label>
               <div class="">
-                <DateSelector v-model:date="createdFrom" v-bind="createdFromAttrs" />
+                <DateSelector :date="createdFrom" v-bind="createdFromAttrs" @update:date="(value) => { createdFrom = value; handleChange(); }" />
               </div>
             </div>
             <div class="grid grid-rows-1 gap-3 items-center">
               <Label class="text-right">Created to:</Label>
               <div class="">
-                <DateSelector v-model:date="createdTo" v-bind="createdToAttrs" />
+                <DateSelector :date="createdTo" v-bind="createdToAttrs" @update:date="(value) => { createdTo = value; handleChange(); }" />
               </div>
             </div>
           </div>
