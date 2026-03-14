@@ -81,26 +81,29 @@ function handleLimitChange(newLimit: string) {
 
 <template>
   <div class="flex items-center justify-between px-2">
-    <div class="flex-1">
-      <div class="flex items-center space-x-2">
-        <p class="text-sm font-medium">
-          Rows per page
-        </p>
-        <Select
-          :model-value="String(selectedLimit ?? 25)"
-          @update:model-value="(v) => handleLimitChange(v as string)"
-        >
-          <SelectTrigger class="h-8 w-[70px]">
-            <SelectValue :placeholder="String(selectedLimit ?? 25)" />
-          </SelectTrigger>
-          <SelectContent side="top">
-            <SelectItem v-for="pageSize in [10, 25, 50, 100]" :key="pageSize" :value="`${pageSize}`">
-              {{ pageSize }}
-            </SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+    <div class="flex items-center space-x-2">
+      <p class="text-sm font-medium">
+        Rows per page
+      </p>
+      <Select
+        :model-value="String(selectedLimit ?? 25)"
+        @update:model-value="(v) => handleLimitChange(v as string)"
+      >
+        <SelectTrigger class="h-8 w-[70px]">
+          <SelectValue :placeholder="String(selectedLimit ?? 25)" />
+        </SelectTrigger>
+        <SelectContent side="top">
+          <SelectItem v-for="pageSize in [10, 25, 50, 100]" :key="pageSize" :value="`${pageSize}`">
+            {{ pageSize }}
+          </SelectItem>
+        </SelectContent>
+      </Select>
     </div>
+
+    <div class="text-muted-foreground">
+      {{ pagination.total }} rows in total
+    </div>
+
     <div class="flex items-center space-x-6 lg:space-x-8">
       <div class="flex w-[100px] items-center justify-center text-sm font-medium">
         Page {{ localPage }} of
