@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import type { TicketQuery } from '@ticketbasics/zod-schemas';
+
 import { TicketPriorityEnum, TicketStatusEnum } from '@ticketbasics/zod-schemas';
 import { FunnelPlus, X } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { useForm } from 'vee-validate';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,8 +21,29 @@ import SelectValue from '@/components/ui/select/SelectValue.vue';
 
 import DateSelector from '../form/DateSelector.vue';
 
-const createdFrom = ref<string>();
-const createdTo = ref<string>();
+const emit = defineEmits<{
+  (e: 'setQuery', patch: Partial<TicketQuery>): void;
+}>();
+
+const { defineField, resetForm, handleSubmit } = useForm({});
+
+const [id, idAttrs] = defineField('id');
+const [subject, subjectAttrs] = defineField('subject');
+const [priority, priorityAttrs] = defineField('priority');
+const [status, statusAttrs] = defineField('status');
+const [createdFrom, createdFromAttrs] = defineField('createdFrom');
+const [createdTo, createdToAttrs] = defineField('createdTo');
+
+const handleChange = handleSubmit((changes: Partial<TicketQuery>) => {
+  emit('setQuery', {
+    id: changes.id,
+    subject: changes.subject,
+    priority: changes.priority,
+    status: changes.status,
+    createdFrom: changes.createdFrom,
+    createdTo: changes.createdTo,
+  });
+});
 </script>
 
 <template>
@@ -32,76 +55,78 @@ const createdTo = ref<string>();
     </PopoverTrigger>
 
     <PopoverContent align="start" class="w-fit">
-      <div class="flex items-center justify-between mb-6">
-        <div class="space-y-1">
-          <h4 class="font-medium leading-none flex items-center gap-2">
-            <FunnelPlus :size="16" /> Table Filters
-          </h4>
-          <p class="text-sm text-muted-foreground">
-            Filtering the rows in the table:
-          </p>
-        </div>
-        <Button variant="outline" size="sm">
-          <X :size="18" /> Clear
-        </Button>
-      </div>
-
-      <div class="grid grid-cols-2 gap-x-12 gap-y-4 items-start">
-        <div class="grid gap-4">
-          <div class="grid grid-rows-1 gap-3 items-center">
-            <Label for="id" class="text-right">Id:</Label>
-            <Input id="id" type="number" class=" h-8" />
+      <form @change.prevent="handleChange">
+        <div class="flex items-center justify-between mb-6">
+          <div class="space-y-1">
+            <h4 class="font-medium leading-none flex items-center gap-2">
+              <FunnelPlus :size="16" /> Table Filters
+            </h4>
+            <p class="text-sm text-muted-foreground">
+              Filtering the rows in the table:
+            </p>
           </div>
-
-          <div class="grid grid-rows-1 gap-3 items-center">
-            <Label for="subject" class="text-right">Subject:</Label>
-            <Input id="subject" class=" h-8" />
-          </div>
-
-          <div class="grid grid-rows-1 gap-3 items-center">
-            <Label for="priority" class="text-right">Priority:</Label>
-            <Select id="priority">
-              <SelectTrigger class="h-8">
-                <SelectValue placeholder="Select Priority" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem v-for="opt in TicketPriorityEnum.options" :key="opt" :value="opt">
-                  {{ opt }}
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div class="grid grid-rows-1 gap-3 items-center">
-            <Label for="status" class="text-right">Status:</Label>
-            <Select id="status">
-              <SelectTrigger class="h-8">
-                <SelectValue placeholder="Select Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem v-for="opt in TicketStatusEnum.options" :key="opt" :value="opt">
-                  {{ opt }}
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <Button variant="outline" size="sm" @click.prevent="resetForm()">
+            <X :size="18" /> Clear
+          </Button>
         </div>
 
-        <div class="grid gap-4">
-          <div class="grid grid-rows-1 gap-3 items-center">
-            <Label class="text-right">Created from:</Label>
-            <div class="">
-              <DateSelector v-model:date="createdFrom" />
+        <div class="grid grid-cols-2 gap-x-12 gap-y-4 items-start">
+          <div class="grid gap-4">
+            <div class="grid grid-rows-1 gap-3 items-center">
+              <Label for="id" class="text-right">Id:</Label>
+              <Input id="id" v-model="id" v-bind="idAttrs" type="number" class=" h-8" />
+            </div>
+
+            <div class="grid grid-rows-1 gap-3 items-center">
+              <Label for="subject" class="text-right">Subject:</Label>
+              <Input id="subject" v-model="subject" v-bind="subjectAttrs" class=" h-8" />
+            </div>
+
+            <div class="grid grid-rows-1 gap-3 items-center">
+              <Label for="priority" class="text-right">Priority:</Label>
+              <Select id="priority" v-model="priority" v-bind="priorityAttrs">
+                <SelectTrigger class="h-8">
+                  <SelectValue placeholder="Select Priority" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem v-for="opt in TicketPriorityEnum.options" :key="opt" :value="opt">
+                    {{ opt }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div class="grid grid-rows-1 gap-3 items-center">
+              <Label for="status" class="text-right">Status:</Label>
+              <Select id="status" v-model="status" v-bind="statusAttrs">
+                <SelectTrigger class="h-8">
+                  <SelectValue placeholder="Select Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem v-for="opt in TicketStatusEnum.options" :key="opt" :value="opt">
+                    {{ opt }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
-          <div class="grid grid-rows-1 gap-3 items-center">
-            <Label class="text-right">Created to:</Label>
-            <div class="">
-              <DateSelector v-model:date="createdTo" />
+
+          <div class="grid gap-4">
+            <div class="grid grid-rows-1 gap-3 items-center">
+              <Label class="text-right">Created from:</Label>
+              <div class="">
+                <DateSelector v-model:date="createdFrom" v-bind="createdFromAttrs" />
+              </div>
+            </div>
+            <div class="grid grid-rows-1 gap-3 items-center">
+              <Label class="text-right">Created to:</Label>
+              <div class="">
+                <DateSelector v-model:date="createdTo" v-bind="createdToAttrs" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </form>
     </PopoverContent>
   </Popover>
 </template>

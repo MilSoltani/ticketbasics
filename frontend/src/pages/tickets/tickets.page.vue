@@ -10,7 +10,7 @@ const { data: tickets, pagination, setQuery, isLoading, error, isFetching } = us
 
 <template>
   <div class="mb-2 flex justify-between">
-    <TicketFilterPopover />
+    <TicketFilterPopover @set-query="setQuery" />
     <NewTicketDialog />
   </div>
 
