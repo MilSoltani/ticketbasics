@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { TicketQuery } from '@ticketbasics/zod-schemas';
+import type { TicketPriority, TicketQuery, TicketStatus } from '@ticketbasics/zod-schemas';
 
-import { TicketPriorityEnum, TicketStatusEnum } from '@ticketbasics/zod-schemas';
+import { DEFAULT_STATUS_FILTER, TicketPriorityEnum, TicketStatusEnum } from '@ticketbasics/zod-schemas';
 import { useDebounceFn } from '@vueuse/core';
 import { FunnelPlus, X } from 'lucide-vue-next';
 import { useForm } from 'vee-validate';
@@ -22,7 +22,23 @@ const emit = defineEmits<{
   (e: 'setQuery', patch: Partial<TicketQuery>): void;
 }>();
 
-const { defineField, resetForm } = useForm({});
+const { defineField, resetForm } = useForm<{
+  id: number | undefined;
+  subject: string | undefined;
+  priority: string[];
+  status: string[];
+  createdFrom: string | undefined;
+  createdTo: string | undefined;
+}>({
+  initialValues: {
+    id: undefined,
+    subject: undefined,
+    priority: [],
+    status: DEFAULT_STATUS_FILTER,
+    createdFrom: undefined,
+    createdTo: undefined,
+  },
+});
 
 const [id, idAttrs] = defineField('id');
 const [subject, subjectAttrs] = defineField('subject');
@@ -35,10 +51,10 @@ const debouncedHandleChange = useDebounceFn(() => {
   emit('setQuery', {
     id: id.value,
     subject: subject.value,
-    priorityIn: priorityIn.value,
-    statusIn: statusIn.value,
-    createdFrom: createdFrom.value,
-    createdTo: createdTo.value,
+    priorityIn: priorityIn.value as TicketPriority[],
+    statusIn: statusIn.value as TicketStatus[],
+    createdFrom: createdFrom.value ? new Date(createdFrom.value) : undefined,
+    createdTo: createdTo.value ? new Date(createdTo.value) : undefined,
   });
 }, 1000);
 
@@ -48,7 +64,7 @@ function handleClear() {
     id: undefined,
     subject: undefined,
     priorityIn: [],
-    statusIn: [],
+    statusIn: DEFAULT_STATUS_FILTER,
     createdFrom: undefined,
     createdTo: undefined,
   });

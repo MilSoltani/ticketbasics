@@ -1,11 +1,15 @@
 <script setup lang="ts">
+import { DEFAULT_STATUS_FILTER } from '@ticketbasics/zod-schemas';
+
 import TablePaginator from '@/components/TablePaginator.vue';
 import NewTicketDialog from '@/components/tickets/NewTicketDialog.vue';
 import TicketFilterPopover from '@/components/tickets/TicketFilterPopover.vue';
 import TicketsListCard from '@/components/tickets/TicketsListCard.vue';
 import { useGetAllTickets } from '@/queries/tickets.query';
 
-const { data: tickets, pagination, setQuery, isLoading, error, isFetching } = useGetAllTickets();
+const { data: tickets, pagination, setQuery, isLoading, error, isFetching } = useGetAllTickets({
+  statusIn: DEFAULT_STATUS_FILTER,
+});
 </script>
 
 <template>

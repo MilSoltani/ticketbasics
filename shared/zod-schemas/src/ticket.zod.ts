@@ -24,13 +24,22 @@ export const TicketCreateSchema = TicketSchema.omit({
 
 export const TicketUpdateSchema = TicketCreateSchema.partial();
 
+export const DEFAULT_STATUS_FILTER: TicketStatus[] = ['open', 'pending', 'working'];
+
 export const TicketQuerySchema = z.object({
   id: z.coerce.number().int().optional(),
   subject: z.string().optional(),
   statusIn: z.union([z.string(), z.array(z.string())])
-    .transform(val => typeof val === 'string' ? (val === '' ? [] : val.split(',')) : val)
+    .optional()
+    .transform((val) => {
+      if (!val || val === '')
+        return ['open', 'pending', 'working'];
+      if (typeof val === 'string')
+        return val.split(',');
+      return val;
+    })
     .pipe(z.array(TicketStatusEnum))
-    .default([]),
+    .default(['open', 'pending', 'working']),
   priorityIn: z.union([z.string(), z.array(z.string())])
     .transform(val => typeof val === 'string' ? (val === '' ? [] : val.split(',')) : val)
     .pipe(z.array(TicketPriorityEnum))
