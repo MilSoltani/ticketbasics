@@ -47,5 +47,11 @@
     "scss",
     "pcss",
     "postcss"
-  ]
+  ],
+
+  // Prefer alias imports over relative imports
+  "typescript.preferences.importModuleSpecifierFormat": "non-relative",
+  "typescript.preferences.preferRelativeImports": false,
+  "javascript.preferences.importModuleSpecifierFormat": "non-relative",
+  "javascript.preferences.preferRelativeImports": false
 }
