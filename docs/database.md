@@ -32,7 +32,6 @@ erDiagram
         string lastName "optional"
         string username
         string email "optional"
-        string role "admin, agent, client"
         boolean is_platform_generated
         string password_hash "optional"
         datetime created_at

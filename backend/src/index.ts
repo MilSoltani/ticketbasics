@@ -6,14 +6,15 @@ import { logger } from 'hono/logger';
 
 import { env } from '../env';
 import ticketHandler from './handler/ticket.handler';
+import userHandler from './handler/user.handler';
 
 export const db = drizzle(env.DATABASE_URL);
 
 const app = new Hono()
   .use('/*', cors())
   .use(logger())
-  .route('/tickets', ticketHandler)
-  .route('/api/tickets', ticketHandler);
+  .route('/api/tickets', ticketHandler)
+  .route('/api/users', userHandler);
 
 serve({
   fetch: app.fetch,

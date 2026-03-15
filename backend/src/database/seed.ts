@@ -17,8 +17,22 @@ async function seedTickets(count: number): Promise<void> {
   }));
 }
 
+async function seedUsers(count: number): Promise<void> {
+  await seed(db, { ticket: schema.usersTable }).refine(f => ({
+    ticket: {
+      count,
+      columns: {
+        firstName: f.firstName(),
+        lastName: f.lastName(),
+        username: f.lastName(),
+      },
+    },
+  }));
+}
+
 const seeders: Record<string, Seeder> = {
   ticket: seedTickets,
+  user: seedUsers,
 };
 
 async function runSeeder(table: string, count: number): Promise<void> {
