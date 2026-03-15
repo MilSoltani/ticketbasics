@@ -2,7 +2,7 @@ import { zValidator } from '@hono/zod-validator';
 import { TicketCreateSchema, TicketQuerySchema, TicketUpdateSchema } from '@ticketbasics/zod-schemas';
 import { Hono } from 'hono';
 
-import { TicketRepository } from '@/repository/ticket.repository';
+import { TicketRepository } from '@/repository';
 
 const ticketHandler = new Hono()
   .get('/', zValidator('query', TicketQuerySchema), async (c) => {
@@ -28,7 +28,7 @@ const ticketHandler = new Hono()
     return c.json({ data: ticket });
   })
   .post('/', zValidator('json', TicketCreateSchema), async (c) => {
-    const data = await c.req.valid('json');
+    const data = c.req.valid('json');
 
     const newTicket = await TicketRepository.create(data);
 
@@ -41,7 +41,7 @@ const ticketHandler = new Hono()
       return c.json({ message: 'Invalid ID' }, 400);
     }
 
-    const data = await c.req.valid('json');
+    const data = c.req.valid('json');
 
     const updatedTicket = await TicketRepository.update(id, data);
 
