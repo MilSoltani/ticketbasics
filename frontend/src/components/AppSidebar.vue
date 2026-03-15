@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BookOpen, Ticket, Users } from 'lucide-vue-next';
+import { BookOpen, Ticket, User, Users } from 'lucide-vue-next';
 import { h, ref } from 'vue';
 
 import type { SidebarProps } from '@/components/ui/sidebar';
@@ -53,9 +53,9 @@ const data = {
       ],
     },
     {
-      title: 'Knowledgebase',
+      title: 'Users',
       url: '#',
-      icon: BookOpen,
+      icon: User,
       items: [
         {
           title: 'Genesis',
@@ -90,6 +90,25 @@ const data = {
         },
         {
           title: 'Changelog',
+          url: '#',
+        },
+      ],
+    },
+    {
+      title: 'Knowledgebase',
+      url: '#',
+      icon: BookOpen,
+      items: [
+        {
+          title: 'Genesis',
+          url: '#',
+        },
+        {
+          title: 'Explorer',
+          url: '#',
+        },
+        {
+          title: 'Quantum',
           url: '#',
         },
       ],
