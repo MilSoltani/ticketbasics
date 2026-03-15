@@ -3,7 +3,7 @@ import type { GetAllQueryResponse, Ticket, TicketQuery } from '@ticketbasics/zod
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 import { computed, ref } from 'vue';
 
-import { createTicket, getAllTickets, getTicketById, updateTicket } from '@/apis/tickets.api';
+import { createTicket, getAllTickets, getTicketById, updateTicket } from '@/apis';
 
 export function useGetAllTickets(initialQuery: Partial<TicketQuery> = {}) {
   const query = ref<Partial<TicketQuery>>({
