@@ -13,12 +13,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-
-import Select from '../ui/select/Select.vue';
-import SelectContent from '../ui/select/SelectContent.vue';
-import SelectItem from '../ui/select/SelectItem.vue';
-import SelectTrigger from '../ui/select/SelectTrigger.vue';
-import SelectValue from '../ui/select/SelectValue.vue';
+import Select from '@/components/ui/select/Select.vue';
+import SelectContent from '@/components/ui/select/SelectContent.vue';
+import SelectItem from '@/components/ui/select/SelectItem.vue';
+import SelectTrigger from '@/components/ui/select/SelectTrigger.vue';
+import SelectValue from '@/components/ui/select/SelectValue.vue';
 
 const emit = defineEmits<{
   (e: 'setQuery', patch: Partial<TicketQuery>): void;

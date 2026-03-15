@@ -6,6 +6,8 @@ import { useDebounceFn } from '@vueuse/core';
 import { FunnelPlus, X } from 'lucide-vue-next';
 import { useForm } from 'vee-validate';
 
+import DateSelector from '@/components/form/DateSelector.vue';
+import MultiSelector from '@/components/form/MultiSelector.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,9 +16,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-
-import DateSelector from '../form/DateSelector.vue';
-import MultiSelector from '../form/MultiSelector.vue';
 
 const emit = defineEmits<{
   (e: 'setQuery', patch: Partial<TicketQuery>): void;

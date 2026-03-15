@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import Textarea from '@/components/ui/textarea/Textarea.vue';
-import { useGetTicketById, useUpdateTicket } from '@/queries/tickets.query';
+import { useGetTicketById, useUpdateTicket } from '@/queries';
 
 const props = defineProps<{
   ticketId: number;

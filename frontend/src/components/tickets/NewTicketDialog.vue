@@ -27,7 +27,7 @@ import SelectItem from '@/components/ui/select/SelectItem.vue';
 import SelectTrigger from '@/components/ui/select/SelectTrigger.vue';
 import SelectValue from '@/components/ui/select/SelectValue.vue';
 import Textarea from '@/components/ui/textarea/Textarea.vue';
-import { useCreateTicket } from '@/queries/tickets.query';
+import { useCreateTicket } from '@/queries';
 
 const dialogOpen = ref(false);
 
