@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import TicketPage from '@/pages/tickets/ticket.page.vue';
 import TicketsPage from '@/pages/tickets/tickets.page.vue';
+import UsersPage from '@/pages/users/users.page.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,6 +20,11 @@ const router = createRouter({
         parentName: 'Tickets',
         parentPath: '/tickets',
       },
+    },
+    {
+      path: '/users',
+      component: UsersPage,
+      name: 'Users',
     },
   ],
 });

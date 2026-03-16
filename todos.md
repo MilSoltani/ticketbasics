@@ -21,3 +21,6 @@
 ## i18n
 - [ ] Setup Backend
 - [ ] Setup Frontend
+
+## Seeding
+- [ ] adding a better seeder

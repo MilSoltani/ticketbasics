@@ -17,6 +17,39 @@ async function seedTickets(count: number): Promise<void> {
   }));
 }
 
+const usernames = [
+  'alice',
+  'bobby',
+  'carol',
+  'david',
+  'elena',
+  'frank',
+  'grace',
+  'henry',
+  'irene',
+  'james',
+  'karen',
+  'lewis',
+  'maria',
+  'nolan',
+  'olivia',
+  'peter',
+  'quinn',
+  'river',
+  'sarah',
+  'tyler',
+  'urban',
+  'vince',
+  'wendy',
+  'xavier',
+  'yvonne',
+  'zach99',
+  'amber1',
+  'blake2',
+  'chase3',
+  'diana4',
+];
+
 async function seedUsers(count: number): Promise<void> {
   await seed(db, { ticket: schema.usersTable }).refine(f => ({
     ticket: {
@@ -24,7 +57,7 @@ async function seedUsers(count: number): Promise<void> {
       columns: {
         firstName: f.firstName(),
         lastName: f.lastName(),
-        username: f.lastName(),
+        username: f.valuesFromArray({ values: usernames }),
       },
     },
   }));

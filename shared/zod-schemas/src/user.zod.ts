@@ -3,6 +3,8 @@ import { z } from 'zod';
 export const userSortEnum = z.enum(['firstName', 'lastName', 'username', 'createdAt']);
 export type UserSortOption = z.infer<typeof userSortEnum>;
 
+export const USER_SORT_OPTIONS = ['firstName', 'lastName', 'username', 'createdAt'];
+
 export const UserSchema = z.object({
   id: z.number().int(),
   firstName: z.string().max(32).optional(),
