@@ -1,12 +1,12 @@
 import { zValidator } from '@hono/zod-validator';
-import { UserAuthSchema } from '@ticketbasics/zod-schemas';
+import { LoginSchema } from '@ticketbasics/zod-schemas';
 import { Hono } from 'hono';
 
 import { UserRepository } from '@/repository';
 import { JwtService } from '@/service/jwt.service';
 
 const authHandler = new Hono()
-  .post('/login', zValidator('json', UserAuthSchema), async (c) => {
+  .post('/login', zValidator('json', LoginSchema), async (c) => {
     const { username } = c.req.valid('json');
 
     const user = await UserRepository.getByUsername(username);

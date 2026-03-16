@@ -1,13 +1,8 @@
+import type { AuthPayload } from '@ticketbasics/zod-schemas';
+
 import { sign } from 'hono/jwt';
 
 import { env } from '@/env';
-
-export interface AuthPayload {
-  sub: number;
-  iat: number;
-  exp: number;
-  [key: string]: string | number;
-}
 
 const EXPIRATION_SECONDS = 60 * 60 * Number(env.JWT_EXPIRE_HOURS);
 

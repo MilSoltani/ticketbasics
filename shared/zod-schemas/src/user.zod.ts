@@ -36,10 +36,6 @@ export const UserQuerySchema = z.object({
   offset: z.coerce.number().int().min(0).optional(),
 });
 
-export const UserAuthSchema = z.object({
-  username: z.string().min(5).max(32),
-});
-
 /* Constants --------------------------------- */
 
 export const USER_SORT_OPTIONS = ['firstName', 'lastName', 'username', 'createdAt'];
