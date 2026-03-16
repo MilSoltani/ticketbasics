@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Ticket } from '@ticketbasics/zod-schemas';
 
+import { MoreHorizontal } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
 
 import Table from '@/components/ui/table/Table.vue';
@@ -9,6 +10,11 @@ import TableCell from '@/components/ui/table/TableCell.vue';
 import TableHead from '@/components/ui/table/TableHead.vue';
 import TableHeader from '@/components/ui/table/TableHeader.vue';
 import TableRow from '@/components/ui/table/TableRow.vue';
+
+import DropdownMenu from '../ui/dropdown-menu/DropdownMenu.vue';
+import DropdownMenuContent from '../ui/dropdown-menu/DropdownMenuContent.vue';
+import DropdownMenuItem from '../ui/dropdown-menu/DropdownMenuItem.vue';
+import DropdownMenuTrigger from '../ui/dropdown-menu/DropdownMenuTrigger.vue';
 
 const props = withDefaults(defineProps<{
   tickets?: Ticket[];
@@ -38,6 +44,8 @@ const router = useRouter();
               <TableHead class="font-bold w-22">
                 Status
               </TableHead>
+
+              <TableHead class="w-10" />
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -64,6 +72,25 @@ const router = useRouter();
               </TableCell>
               <TableCell class="py-4">
                 {{ ticket.status }}
+              </TableCell>
+              <TableCell>
+                <DropdownMenu>
+                  <DropdownMenuTrigger as-child>
+                    <Button
+                      variant="ghost"
+                      class="p-1 rounded-md data-[state=open]:bg-muted hover:bg-muted cursor-pointer"
+                      @click.stop
+                    >
+                      <MoreHorizontal class="h-4 w-4" />
+                      <span class="sr-only">Open menu</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" class="w-[160px]">
+                    <DropdownMenuItem class="cursor-pointer">
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TableCell>
             </TableRow>
           </TableBody>
