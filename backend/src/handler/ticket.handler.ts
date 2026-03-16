@@ -51,7 +51,7 @@ const ticketHandler = new Hono()
 
     return c.json({ data: updatedTicket });
   })
-  .delete('/tickets/:id', async (c) => {
+  .delete('/:id', async (c) => {
     const id = Number(c.req.param('id'));
 
     if (Number.isNaN(id)) {
@@ -64,7 +64,7 @@ const ticketHandler = new Hono()
       return c.json({ message: 'Not found' }, 404);
     }
 
-    return c.status(204);
+    return c.json({ data: deletedTicket }, 200);
   });
 
 export default ticketHandler;
