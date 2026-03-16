@@ -94,6 +94,19 @@ export const UserRepository = {
     return UserSchema.parse(result);
   },
 
+  async getByUsername(username: string) {
+    const [result] = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.username, username));
+
+    if (!result) {
+      throw new Error(`User with username ${username} not found`);
+    }
+
+    return UserSchema.parse(result);
+  },
+
   async create(user: UserCreatePayload) {
     const validated = UserCreateSchema.parse(user);
 
