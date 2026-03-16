@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { DEFAULT_STATUS_FILTER } from '@ticketbasics/zod-schemas';
+import { DEFAULT_STATUS_FILTER, TICKET_SORT_OPTIONS } from '@ticketbasics/zod-schemas';
 
+import TableSorter from '@/components/table/TableSorter.vue';
 import TablePaginator from '@/components/TablePaginator.vue';
 import NewTicketDialog from '@/components/tickets/NewTicketDialog.vue';
 import TicketFilterPopover from '@/components/tickets/TicketFilterPopover.vue';
 import TicketsListCard from '@/components/tickets/TicketsListCard.vue';
-import TicketSorter from '@/components/tickets/TicketSorter.vue';
 import { useGetAllTickets } from '@/queries/tickets.query';
 
 const { data: tickets, pagination, setQuery, isLoading, error, isFetching } = useGetAllTickets({
@@ -17,7 +17,7 @@ const { data: tickets, pagination, setQuery, isLoading, error, isFetching } = us
   <div class="mb-2 flex justify-between">
     <div class="flex justify-start gap-2">
       <TicketFilterPopover @set-query="setQuery" />
-      <TicketSorter @set-query="setQuery" />
+      <TableSorter initial-sort="createdAt" initial-order="desc" :options="TICKET_SORT_OPTIONS" @change="setQuery" />
     </div>
     <NewTicketDialog />
   </div>

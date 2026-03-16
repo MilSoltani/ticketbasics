@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import type { TicketQuery, TicketSortOption } from '@ticketbasics/zod-schemas';
+import type { SortOrder } from '@ticketbasics/zod-schemas';
 
-import { ticketSortEnum } from '@ticketbasics/zod-schemas';
-import { useDebounceFn } from '@vueuse/core';
 import { ListOrdered } from 'lucide-vue-next';
 import { useForm } from 'vee-validate';
 
@@ -19,29 +17,35 @@ import SelectItem from '@/components/ui/select/SelectItem.vue';
 import SelectTrigger from '@/components/ui/select/SelectTrigger.vue';
 import SelectValue from '@/components/ui/select/SelectValue.vue';
 
+const props = defineProps<{
+  options: string[];
+  initialSort: string;
+  initialOrder?: SortOrder;
+}>();
+
 const emit = defineEmits<{
-  (e: 'setQuery', patch: Partial<TicketQuery>): void;
+  (e: 'change', patch: { sort: string; order: SortOrder }): void;
 }>();
 
 const { defineField } = useForm<{
-  sort: TicketSortOption;
-  order: 'asc' | 'desc';
+  sort: string;
+  order: SortOrder;
 }>({
   initialValues: {
-    sort: 'createdAt' as TicketSortOption,
-    order: 'desc',
+    sort: props.initialSort,
+    order: props.initialOrder || 'desc',
   },
 });
 
 const [sort] = defineField('sort');
 const [order] = defineField('order');
 
-const debouncedEmitQuery = useDebounceFn(() => {
-  emit('setQuery', {
-    sort: sort.value as TicketSortOption,
+function handleSort() {
+  emit('change', {
+    sort: sort.value,
     order: order.value,
   });
-}, 500);
+}
 </script>
 
 <template>
@@ -57,14 +61,14 @@ const debouncedEmitQuery = useDebounceFn(() => {
         <div class="grid grid-cols-2 gap-x-12 gap-y-4 items-start mb-2">
           <div class="grid gap-4">
             <div class="grid grid-rows-1 gap-3 items-center">
-              <Label for="id" class="text-right">Sort By:</Label>
+              <Label for="sort" class="text-right">Sort By:</Label>
 
-              <Select :id="sort" v-model="sort" @update:model-value="debouncedEmitQuery">
+              <Select id="sort" v-model="sort" @update:model-value="handleSort">
                 <SelectTrigger>
                   <SelectValue placeholder="Sort By" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem v-for="sortableColumn in ticketSortEnum.options" :key="sortableColumn" :value="sortableColumn">
+                  <SelectItem v-for="sortableColumn in props.options" :key="sortableColumn" :value="sortableColumn">
                     {{ sortableColumn }}
                   </SelectItem>
                 </SelectContent>
@@ -72,8 +76,8 @@ const debouncedEmitQuery = useDebounceFn(() => {
             </div>
 
             <div class="grid grid-rows-1 gap-3 items-center">
-              <Label class="text-right">Order:</Label>
-              <Select v-model="order" @update:model-value="debouncedEmitQuery">
+              <Label for="order" class="text-right">Order:</Label>
+              <Select id="order" v-model="order" @update:model-value="handleSort">
                 <SelectTrigger>
                   <SelectValue placeholder="Order" />
                 </SelectTrigger>

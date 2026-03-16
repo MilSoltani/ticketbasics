@@ -11,3 +11,6 @@ export const PaginationSchema = z.object({
 export type PaginationType = z.infer<typeof PaginationSchema>;
 
 export interface GetAllQueryResponse { data: any[]; pagination: PaginationType }
+
+export const SortOrderEnum = z.enum(['asc', 'desc']);
+export type SortOrder = z.infer<typeof SortOrderEnum>;
