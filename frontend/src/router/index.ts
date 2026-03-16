@@ -9,10 +9,16 @@ const router = createRouter({
     {
       path: '/tickets',
       component: TicketsPage,
+      name: 'Tickets',
     },
     {
       path: '/tickets/:id',
       component: TicketPage,
+      name: 'Ticket',
+      meta: {
+        parentName: 'Tickets',
+        parentPath: '/tickets',
+      },
     },
   ],
 });
