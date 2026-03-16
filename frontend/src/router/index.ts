@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import TicketPage from '@/pages/tickets/ticket.page.vue';
 import TicketsPage from '@/pages/tickets/tickets.page.vue';
+import UserPage from '@/pages/users/user.page.vue';
 import UsersPage from '@/pages/users/users.page.vue';
 
 const router = createRouter({
@@ -25,6 +26,15 @@ const router = createRouter({
       path: '/users',
       component: UsersPage,
       name: 'Users',
+    },
+    {
+      path: '/users/:id',
+      component: UserPage,
+      name: 'User',
+      meta: {
+        parentName: 'Users',
+        parentPath: '/users',
+      },
     },
   ],
 });
