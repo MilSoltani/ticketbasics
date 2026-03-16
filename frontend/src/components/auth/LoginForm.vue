@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue';
 
+import { LoginSchema } from '@ticketbasics/zod-schemas';
+import { toTypedSchema } from '@vee-validate/zod';
+import { ErrorMessage, useForm } from 'vee-validate';
+import { toast } from 'vue-sonner';
+
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -9,13 +14,34 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import Label from '@/components/ui/label/Label.vue';
 import { cn } from '@/lib/utils';
-
-import Label from '../ui/label/Label.vue';
+import { useLogin } from '@/queries/auth.query';
 
 const props = defineProps<{
   class?: HTMLAttributes['class'];
 }>();
+
+const { mutate: login } = useLogin();
+
+const { defineField, handleSubmit, resetForm, errors } = useForm({
+  validationSchema: toTypedSchema(LoginSchema),
+});
+
+const [username, usernameAttrs] = defineField('username');
+
+const onSubmit = handleSubmit((values) => {
+  login(values.username as string, {
+    onSuccess: () => {
+      resetForm();
+      toast.success('Login successful!');
+    },
+    onError: (error: any) => {
+      const message = error?.message || error?.response?.data?.message || 'Failed to create!';
+      toast.error(message);
+    },
+  });
+});
 </script>
 
 <template>
@@ -25,17 +51,18 @@ const props = defineProps<{
         <CardTitle>Login</CardTitle>
       </CardHeader>
       <CardContent>
-        <form>
+        <form @submit.prevent="onSubmit">
           <div>
             <div class="mb-5">
-              <Label for="username" class="mb-2">
-                Username
+              <Label for="username" class="mb-2 flex justify-between">
+                <div>Username *</div>
+
+                <div class="text-red-500">
+                  <ErrorMessage name="username" />
+                </div>
               </Label>
-              <Input
-                id="username"
-                type="username"
-                required
-              />
+
+              <Input id="username" v-model="username" :class="{ 'border-red-500': errors.username }" v-bind="usernameAttrs" required />
             </div>
 
             <div class="mt-5">
