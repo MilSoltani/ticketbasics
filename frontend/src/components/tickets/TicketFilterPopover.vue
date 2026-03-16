@@ -3,19 +3,14 @@ import type { TicketPriority, TicketQuery, TicketStatus } from '@ticketbasics/zo
 
 import { DEFAULT_STATUS_FILTER, TicketPriorityEnum, TicketStatusEnum } from '@ticketbasics/zod-schemas';
 import { useDebounceFn } from '@vueuse/core';
-import { FunnelPlus, X } from 'lucide-vue-next';
 import { useForm } from 'vee-validate';
 
 import DateSelector from '@/components/form/DateSelector.vue';
 import MultiSelector from '@/components/form/MultiSelector.vue';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+
+import TableFilterLayout from '../table/TableFilterLayout.vue';
 
 const emit = defineEmits<{
   (e: 'setQuery', patch: Partial<TicketQuery>): void;
@@ -71,70 +66,48 @@ function handleClear() {
 </script>
 
 <template>
-  <Popover>
-    <PopoverTrigger as-child>
-      <Button variant="outline" size="sm">
-        <FunnelPlus :size="16" /> Table Filters
-      </Button>
-    </PopoverTrigger>
-
-    <PopoverContent align="start" class="w-150">
-      <form>
-        <div class="flex items-center justify-between mb-6">
-          <div class="space-y-1">
-            <h4 class="font-medium leading-none flex items-center gap-2">
-              <FunnelPlus :size="16" /> Table Filters
-            </h4>
-            <p class="text-sm text-muted-foreground">
-              Filtering the rows in the table:
-            </p>
+  <form>
+    <TableFilterLayout @clear="handleClear">
+      <div class="grid grid-cols-2 gap-x-12 gap-y-4 items-start mb-2">
+        <div class="grid gap-4">
+          <div class="grid grid-rows-1 gap-3 items-center">
+            <Label for="id" class="text-right">Id:</Label>
+            <Input id="id" v-model="id" v-bind="idAttrs" type="number" class=" h-8" @input="debouncedHandleChange" />
           </div>
-          <Button type="button" variant="outline" size="sm" @click.prevent="handleClear">
-            <X :size="18" /> Clear
-          </Button>
+
+          <div class="grid grid-rows-1 gap-3 items-center">
+            <Label for="subject" class="text-right">Subject:</Label>
+            <Input id="subject" v-model="subject" v-bind="subjectAttrs" class=" h-8" @input="debouncedHandleChange" />
+          </div>
+
+          <div class="grid grid-rows-1 gap-3 items-center">
+            <Label for="priority" class="text-right">Priority:</Label>
+
+            <MultiSelector v-model="priorityIn" v-bind="priorityInAttrs" title="Priority" :options="TicketPriorityEnum.options" @update:model-value="(value) => { priorityIn = value; debouncedHandleChange(); }" />
+          </div>
+
+          <div class="grid grid-rows-1 gap-3 items-center">
+            <Label for="status" class="text-right">Status:</Label>
+
+            <MultiSelector v-model="statusIn" v-bind="statusInAttrs" title="Status" :options="TicketStatusEnum.options" @update:model-value="(value) => { statusIn = value; debouncedHandleChange(); }" />
+          </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-x-12 gap-y-4 items-start mb-2">
-          <div class="grid gap-4">
-            <div class="grid grid-rows-1 gap-3 items-center">
-              <Label for="id" class="text-right">Id:</Label>
-              <Input id="id" v-model="id" v-bind="idAttrs" type="number" class=" h-8" @input="debouncedHandleChange" />
-            </div>
-
-            <div class="grid grid-rows-1 gap-3 items-center">
-              <Label for="subject" class="text-right">Subject:</Label>
-              <Input id="subject" v-model="subject" v-bind="subjectAttrs" class=" h-8" @input="debouncedHandleChange" />
-            </div>
-
-            <div class="grid grid-rows-1 gap-3 items-center">
-              <Label for="priority" class="text-right">Priority:</Label>
-
-              <MultiSelector v-model="priorityIn" v-bind="priorityInAttrs" title="Priority" :options="TicketPriorityEnum.options" @update:model-value="(value) => { priorityIn = value; debouncedHandleChange(); }" />
-            </div>
-
-            <div class="grid grid-rows-1 gap-3 items-center">
-              <Label for="status" class="text-right">Status:</Label>
-
-              <MultiSelector v-model="statusIn" v-bind="statusInAttrs" title="Status" :options="TicketStatusEnum.options" @update:model-value="(value) => { statusIn = value; debouncedHandleChange(); }" />
+        <div class="grid gap-4">
+          <div class="grid grid-rows-1 gap-3 items-center">
+            <Label class="text-right">Created from:</Label>
+            <div class="">
+              <DateSelector :date="createdFrom" v-bind="createdFromAttrs" @update:date="(value) => { createdFrom = value; debouncedHandleChange(); }" />
             </div>
           </div>
-
-          <div class="grid gap-4">
-            <div class="grid grid-rows-1 gap-3 items-center">
-              <Label class="text-right">Created from:</Label>
-              <div class="">
-                <DateSelector :date="createdFrom" v-bind="createdFromAttrs" @update:date="(value) => { createdFrom = value; debouncedHandleChange(); }" />
-              </div>
-            </div>
-            <div class="grid grid-rows-1 gap-3 items-center">
-              <Label class="text-right">Created to:</Label>
-              <div class="">
-                <DateSelector :date="createdTo" v-bind="createdToAttrs" @update:date="(value) => { createdTo = value; debouncedHandleChange(); }" />
-              </div>
+          <div class="grid grid-rows-1 gap-3 items-center">
+            <Label class="text-right">Created to:</Label>
+            <div class="">
+              <DateSelector :date="createdTo" v-bind="createdToAttrs" @update:date="(value) => { createdTo = value; debouncedHandleChange(); }" />
             </div>
           </div>
         </div>
-      </form>
-    </PopoverContent>
-  </Popover>
+      </div>
+    </TableFilterLayout>
+  </form>
 </template>
