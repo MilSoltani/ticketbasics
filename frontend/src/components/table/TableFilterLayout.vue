@@ -29,9 +29,6 @@ const emit = defineEmits<{
           <h4 class="font-medium flex items-center gap-2">
             <FunnelPlus :size="16" /> Table Filters
           </h4>
-          <p class="text-sm text-muted-foreground">
-            Apply filters to the rows below:
-          </p>
         </div>
         <Button variant="outline" size="sm" @click.prevent="emit('clear')">
           <X :size="18" /> Clear

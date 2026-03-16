@@ -1,7 +1,7 @@
 import type { UserCreatePayload, UserQuery, UserUpdatePayload } from '@ticketbasics/zod-schemas';
 
 import { UserCreateSchema, UserSchema } from '@ticketbasics/zod-schemas';
-import { and, asc, between, count, desc, eq, gte, like, lte } from 'drizzle-orm';
+import { and, asc, between, count, desc, eq, gte, ilike, lte } from 'drizzle-orm';
 
 import { usersTable } from '@/database/schema';
 import { db } from '@/index';
@@ -15,15 +15,15 @@ export const UserRepository = {
     }
 
     if (query.firstName) {
-      conditions.push(like(usersTable.firstName, `%${query.firstName}%`));
+      conditions.push(ilike(usersTable.firstName, `%${query.firstName}%`));
     }
 
     if (query.lastName) {
-      conditions.push(like(usersTable.lastName, `%${query.lastName}%`));
+      conditions.push(ilike(usersTable.lastName, `%${query.lastName}%`));
     }
 
     if (query.username) {
-      conditions.push(like(usersTable.username, `%${query.username}%`));
+      conditions.push(ilike(usersTable.username, `%${query.username}%`));
     }
 
     if (query.createdFrom && query.createdTo) {

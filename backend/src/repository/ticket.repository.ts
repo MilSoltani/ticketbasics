@@ -2,7 +2,7 @@ import type { TicketQuery } from '@ticketbasics/zod-schemas';
 import type { InferInsertModel } from 'drizzle-orm';
 
 import { TicketCreateSchema, TicketSchema } from '@ticketbasics/zod-schemas';
-import { and, asc, between, count, desc, eq, gte, inArray, like, lte } from 'drizzle-orm';
+import { and, asc, between, count, desc, eq, gte, ilike, inArray, lte } from 'drizzle-orm';
 
 import { ticketsTable } from '@/database/schema';
 import { db } from '@/index';
@@ -18,7 +18,7 @@ export const TicketRepository = {
     }
 
     if (query.subject) {
-      conditions.push(like(ticketsTable.subject, `%${query.subject}%`));
+      conditions.push(ilike(ticketsTable.subject, `%${query.subject}%`));
     }
 
     if (query.statusIn.length > 0) {
@@ -46,7 +46,7 @@ export const TicketRepository = {
       createdAt: ticketsTable.createdAt,
     } as const;
 
-    const sortColumn = query.sort ? sortMap[query.sort] : ticketsTable.createdAt;
+    const sortColumn = query.sort && query.sort in sortMap ? sortMap[query.sort as keyof typeof sortMap] : ticketsTable.createdAt;
 
     const orderBy = query.order === 'asc'
       ? asc(sortColumn)
