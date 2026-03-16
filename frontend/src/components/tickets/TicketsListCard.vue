@@ -3,6 +3,7 @@ import type { Ticket } from '@ticketbasics/zod-schemas';
 
 import { MoreHorizontal } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
+import { toast } from 'vue-sonner';
 
 import Table from '@/components/ui/table/Table.vue';
 import TableBody from '@/components/ui/table/TableBody.vue';
@@ -10,7 +11,9 @@ import TableCell from '@/components/ui/table/TableCell.vue';
 import TableHead from '@/components/ui/table/TableHead.vue';
 import TableHeader from '@/components/ui/table/TableHeader.vue';
 import TableRow from '@/components/ui/table/TableRow.vue';
+import { useDeleteTicket } from '@/queries';
 
+import Button from '../ui/button/Button.vue';
 import DropdownMenu from '../ui/dropdown-menu/DropdownMenu.vue';
 import DropdownMenuContent from '../ui/dropdown-menu/DropdownMenuContent.vue';
 import DropdownMenuItem from '../ui/dropdown-menu/DropdownMenuItem.vue';
@@ -23,6 +26,20 @@ const props = withDefaults(defineProps<{
 });
 
 const router = useRouter();
+
+const { mutate: deleteTicket } = useDeleteTicket();
+
+function handleDelete(id: number) {
+  deleteTicket(id, {
+    onSuccess: () => {
+      toast.success('Deleted!');
+    },
+    onError: (error: any) => {
+      const message = error?.message || error?.response?.data?.message || 'Failed to delete!';
+      toast.error(message);
+    },
+  });
+}
 </script>
 
 <template>
@@ -45,7 +62,7 @@ const router = useRouter();
                 Status
               </TableHead>
 
-              <TableHead class="w-10" />
+              <TableHead class="w-12" />
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -78,7 +95,7 @@ const router = useRouter();
                   <DropdownMenuTrigger as-child>
                     <Button
                       variant="ghost"
-                      class="p-1 rounded-md data-[state=open]:bg-muted hover:bg-muted cursor-pointer"
+                      class="p-0 w-8 h-8 data-[state=open]:bg-muted cursor-pointer"
                       @click.stop
                     >
                       <MoreHorizontal class="h-4 w-4" />
@@ -86,7 +103,7 @@ const router = useRouter();
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" class="w-[160px]">
-                    <DropdownMenuItem class="cursor-pointer">
+                    <DropdownMenuItem class="cursor-pointer" @click="handleDelete(ticket.id)">
                       Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>

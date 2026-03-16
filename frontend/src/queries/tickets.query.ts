@@ -3,7 +3,7 @@ import type { GetAllQueryResponse, Ticket, TicketQuery } from '@ticketbasics/zod
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 import { computed, ref } from 'vue';
 
-import { createTicket, getAllTickets, getTicketById, updateTicket } from '@/apis';
+import { createTicket, deleteTicket, getAllTickets, getTicketById, updateTicket } from '@/apis';
 
 export function useGetAllTickets(initialQuery: Partial<TicketQuery> = {}) {
   const query = ref<Partial<TicketQuery>>({
@@ -74,6 +74,25 @@ export function useCreateTicket() {
     onSuccess: (ticket: Ticket) => {
       queryClient.invalidateQueries({ queryKey: ['tickets', 'all'] });
       queryClient.setQueryData(['tickets', ticket.id], ticket);
+    },
+
+    onError: (err) => {
+      console.error('Ticket creation failed', err);
+    },
+  });
+
+  return { mutate, mutateAsync, isPending, error, reset };
+}
+
+export function useDeleteTicket() {
+  const queryClient = useQueryClient();
+
+  const { mutate, mutateAsync, isPending, error, reset } = useMutation({
+    mutationFn: (id: number) => deleteTicket(id),
+
+    onSuccess: (ticket: Ticket) => {
+      queryClient.invalidateQueries({ queryKey: ['tickets', 'all'] });
+      queryClient.removeQueries({ queryKey: ['ticket', ticket.id], exact: true });
     },
 
     onError: (err) => {

@@ -76,3 +76,15 @@ export async function createTicket(newTicket: TicketCreatePayload) {
 
   return json.data;
 }
+
+export async function deleteTicket(id: number) {
+  const response = await ticketsClient[':id'].$delete({ param: { id: String(id) } });
+
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.statusText}`);
+  }
+
+  const json = await response.json();
+
+  return json.data;
+}
