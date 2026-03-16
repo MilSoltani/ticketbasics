@@ -29,7 +29,7 @@ export const UserQuerySchema = z.object({
   username: z.string().optional(),
   createdFrom: z.coerce.date().optional(),
   createdTo: z.coerce.date().optional(),
-  sort: userSortEnum.optional(),
+  sort: z.string().optional(),
   order: z.enum(['asc', 'desc']).optional(),
   limit: z.coerce.number().int().min(1).max(100).optional(),
   offset: z.coerce.number().int().min(0).optional(),

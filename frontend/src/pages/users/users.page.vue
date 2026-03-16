@@ -1,20 +1,19 @@
 <script setup lang="ts">
 import { USER_SORT_OPTIONS } from '@ticketbasics/zod-schemas';
 
+import TableSorter from '@/components/table/TableSorter.vue';
 import TablePaginator from '@/components/TablePaginator.vue';
 import UsersListCard from '@/components/users/UsersListCard.vue';
 import { useGetAllUsers } from '@/queries';
 
-const { data: tickets, pagination, setQuery, isLoading, error, isFetching } = useGetAllUsers({});
+const { data: users, pagination, setQuery, isLoading, error, isFetching } = useGetAllUsers({});
 </script>
 
 <template>
   <div class="mb-2 flex justify-between">
     <div class="flex justify-start gap-2">
-      <TicketFilterPopover @set-query="setQuery" />
       <TableSorter initial-sort="createdAt" initial-order="desc" :options="USER_SORT_OPTIONS" @change="setQuery" />
     </div>
-    <NewTicketDialog />
   </div>
 
   <div v-if="isLoading">
@@ -27,7 +26,7 @@ const { data: tickets, pagination, setQuery, isLoading, error, isFetching } = us
     Fetching...
   </div>
 
-  <UsersListCard :tickets="tickets" />
+  <UsersListCard :users="users" />
 
   <div v-if="pagination" class="my-2">
     <TablePaginator :pagination="pagination" @set-query="setQuery" />

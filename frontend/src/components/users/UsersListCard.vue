@@ -54,10 +54,10 @@ function handleDelete(id: number) {
               <TableHead class="font-bold">
                 Username
               </TableHead>
-              <TableHead class="font-bold w-24">
+              <TableHead class="font-bold">
                 First Name
               </TableHead>
-              <TableHead class="font-bold w-22">
+              <TableHead class="font-bold">
                 Last Name
               </TableHead>
 
