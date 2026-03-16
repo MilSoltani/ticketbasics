@@ -3,7 +3,7 @@ import type { GetAllQueryResponse, User, UserQuery } from '@ticketbasics/zod-sch
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 import { computed, ref } from 'vue';
 
-import { createUser, getAllUsers, getUserById, updateUser } from '@/apis';
+import { createUser, deleteUser, getAllUsers, getUserById, updateUser } from '@/apis';
 
 export function useGetAllUsers(initialQuery: Partial<UserQuery> = {}) {
   const query = ref<Partial<UserQuery>>({
@@ -74,6 +74,25 @@ export function useCreateUser() {
     onSuccess: (user: User) => {
       queryClient.invalidateQueries({ queryKey: ['users', 'all'] });
       queryClient.setQueryData(['users', user.id], user);
+    },
+
+    onError: (err) => {
+      console.error('User creation failed', err);
+    },
+  });
+
+  return { mutate, mutateAsync, isPending, error, reset };
+}
+
+export function useDeleteUser() {
+  const queryClient = useQueryClient();
+
+  const { mutate, mutateAsync, isPending, error, reset } = useMutation({
+    mutationFn: (id: number) => deleteUser(id),
+
+    onSuccess: (user: User) => {
+      queryClient.invalidateQueries({ queryKey: ['users', 'all'] });
+      queryClient.removeQueries({ queryKey: ['user', user.id], exact: true });
     },
 
     onError: (err) => {

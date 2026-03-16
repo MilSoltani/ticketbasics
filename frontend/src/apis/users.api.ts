@@ -76,3 +76,15 @@ export async function createUser(newUser: UserCreatePayload) {
 
   return json.data;
 }
+
+export async function deleteUser(id: number) {
+  const response = await usersClient[':id'].$delete({ param: { id: String(id) } });
+
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.statusText}`);
+  }
+
+  const json = await response.json();
+
+  return json.data;
+}
