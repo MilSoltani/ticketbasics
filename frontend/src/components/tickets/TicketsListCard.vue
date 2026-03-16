@@ -5,6 +5,11 @@ import { MoreHorizontal } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue-sonner';
 
+import Button from '@/components/ui/button/Button.vue';
+import DropdownMenu from '@/components/ui/dropdown-menu/DropdownMenu.vue';
+import DropdownMenuContent from '@/components/ui/dropdown-menu/DropdownMenuContent.vue';
+import DropdownMenuItem from '@/components/ui/dropdown-menu/DropdownMenuItem.vue';
+import DropdownMenuTrigger from '@/components/ui/dropdown-menu/DropdownMenuTrigger.vue';
 import Table from '@/components/ui/table/Table.vue';
 import TableBody from '@/components/ui/table/TableBody.vue';
 import TableCell from '@/components/ui/table/TableCell.vue';
@@ -12,12 +17,6 @@ import TableHead from '@/components/ui/table/TableHead.vue';
 import TableHeader from '@/components/ui/table/TableHeader.vue';
 import TableRow from '@/components/ui/table/TableRow.vue';
 import { useDeleteTicket } from '@/queries';
-
-import Button from '../ui/button/Button.vue';
-import DropdownMenu from '../ui/dropdown-menu/DropdownMenu.vue';
-import DropdownMenuContent from '../ui/dropdown-menu/DropdownMenuContent.vue';
-import DropdownMenuItem from '../ui/dropdown-menu/DropdownMenuItem.vue';
-import DropdownMenuTrigger from '../ui/dropdown-menu/DropdownMenuTrigger.vue';
 
 const props = withDefaults(defineProps<{
   tickets?: Ticket[];
