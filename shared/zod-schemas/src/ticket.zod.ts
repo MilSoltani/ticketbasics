@@ -2,8 +2,12 @@ import { z } from 'zod';
 
 import { SortOrderEnum } from './common.zod';
 
+/* Enums --------------------------------- */
+
 export const TicketStatusEnum = z.enum(['open', 'pending', 'working', 'resolved', 'closed']);
 export const TicketPriorityEnum = z.enum(['low', 'medium', 'high', 'urgent']);
+
+/* Schemas --------------------------------- */
 
 export const TicketSchema = z.object({
   id: z.number().int(),
@@ -25,10 +29,6 @@ export const TicketCreateSchema = TicketSchema.omit({
 });
 
 export const TicketUpdateSchema = TicketCreateSchema.partial();
-
-export const DEFAULT_STATUS_FILTER: TicketStatus[] = ['open', 'pending', 'working'];
-
-export const TICKET_SORT_OPTIONS = ['subject', 'createdAt', 'priority', 'status'];
 
 export const TicketQuerySchema = z.object({
   id: z.coerce.number().int().optional(),
@@ -55,6 +55,13 @@ export const TicketQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).optional(),
   offset: z.coerce.number().int().min(0).optional(),
 });
+
+/* Constants --------------------------------- */
+
+export const DEFAULT_STATUS_FILTER: TicketStatus[] = ['open', 'pending', 'working'];
+export const TICKET_SORT_OPTIONS = ['subject', 'createdAt', 'priority', 'status'];
+
+/* Types --------------------------------- */
 
 export type Ticket = z.infer<typeof TicketSchema>;
 export type TicketCreatePayload = z.infer<typeof TicketCreateSchema>;

@@ -1,9 +1,10 @@
 import { z } from 'zod';
 
-export const userSortEnum = z.enum(['firstName', 'lastName', 'username', 'createdAt']);
-export type UserSortOption = z.infer<typeof userSortEnum>;
+/* Enums --------------------------------- */
 
-export const USER_SORT_OPTIONS = ['firstName', 'lastName', 'username', 'createdAt'];
+export const userSortEnum = z.enum(['firstName', 'lastName', 'username', 'createdAt']);
+
+/* Schemas --------------------------------- */
 
 export const UserSchema = z.object({
   id: z.number().int(),
@@ -35,7 +36,14 @@ export const UserQuerySchema = z.object({
   offset: z.coerce.number().int().min(0).optional(),
 });
 
+/* Constants --------------------------------- */
+
+export const USER_SORT_OPTIONS = ['firstName', 'lastName', 'username', 'createdAt'];
+
+/* Types --------------------------------- */
+
 export type User = z.infer<typeof UserSchema>;
 export type UserCreatePayload = z.infer<typeof UserCreateSchema>;
 export type UserUpdatePayload = z.infer<typeof UserUpdateSchema>;
+export type UserSortOption = z.infer<typeof userSortEnum>;
 export type UserQuery = z.infer<typeof UserQuerySchema>;
