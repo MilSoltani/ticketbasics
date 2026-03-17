@@ -29,9 +29,13 @@ const { defineField, handleSubmit, resetForm, errors } = useForm({
 });
 
 const [username, usernameAttrs] = defineField('username');
+const [password, passwordAttrs] = defineField('password');
 
 const onSubmit = handleSubmit((values) => {
-  login(values.username as string, {
+  login({
+    username: values.username,
+    password: values.password,
+  }, {
     onSuccess: () => {
       resetForm();
       toast.success('Login successful!');
@@ -52,24 +56,34 @@ const onSubmit = handleSubmit((values) => {
       </CardHeader>
       <CardContent>
         <form @submit.prevent="onSubmit">
-          <div>
-            <div class="mb-5">
-              <Label for="username" class="mb-2 flex justify-between">
-                <div>Username *</div>
+          <div class="mb-5">
+            <Label for="username" class="mb-2 flex justify-between">
+              <div>Username *</div>
 
-                <div class="text-red-500">
-                  <ErrorMessage name="username" />
-                </div>
-              </Label>
+              <div class="text-red-500">
+                <ErrorMessage name="username" />
+              </div>
+            </Label>
 
-              <Input id="username" v-model="username" :class="{ 'border-red-500': errors.username }" v-bind="usernameAttrs" required />
-            </div>
+            <Input id="username" v-model="username" :class="{ 'border-red-500': errors.username }" v-bind="usernameAttrs" required />
+          </div>
 
-            <div class="mt-5">
-              <Button type="submit">
-                Login
-              </Button>
-            </div>
+          <div class="mb-5">
+            <Label for="password" class="mb-2 flex justify-between">
+              <div>Pasword *</div>
+
+              <div class="text-red-500">
+                <ErrorMessage name="password" />
+              </div>
+            </Label>
+
+            <Input id="password" v-model="password" type="password" :class="{ 'border-red-500': errors.password }" v-bind="passwordAttrs" required />
+          </div>
+
+          <div class="mt-5">
+            <Button type="submit">
+              Login
+            </Button>
           </div>
         </form>
       </CardContent>

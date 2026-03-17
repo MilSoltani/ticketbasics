@@ -94,17 +94,18 @@ export const UserRepository = {
     return UserSchema.parse(result);
   },
 
-  async getByUsername(username: string) {
+  async getByUsernameForAuth(username: string) {
     const [result] = await db
       .select()
       .from(usersTable)
-      .where(eq(usersTable.username, username));
+      .where(eq(usersTable.username, username))
+      .limit(1);
 
     if (!result) {
-      throw new Error(`User with username ${username} not found`);
+      return null;
     }
 
-    return UserSchema.parse(result);
+    return result;
   },
 
   async create(user: UserCreatePayload) {

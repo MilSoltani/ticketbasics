@@ -6,8 +6,8 @@ import { login } from '@/apis';
 
 export function useLogin() {
   const { mutate, mutateAsync, isPending, error, reset } = useMutation({
-    mutationFn: async (username: string) => {
-      const response = await login({ username });
+    mutationFn: async ({ username, password }: { username: string; password: string }) => {
+      const response = await login({ username, password });
       return response.token;
     },
 

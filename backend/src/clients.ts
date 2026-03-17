@@ -8,4 +8,4 @@ export const ticketsClient = hc<typeof ticketHandler>('http://localhost:3000/api
 
 export const usersClient = hc<typeof userHandler>('http://localhost:3000/api/users');
 
-export const authClient = hc<typeof authHandler>('http://localhost:3000/api/login');
+export const authClient = hc<typeof authHandler>('http://localhost:3000/api');

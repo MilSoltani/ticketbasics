@@ -16,8 +16,8 @@ export const db = drizzle(env.DATABASE_URL);
 const app = new Hono()
   .use('/*', cors())
   .use(logger())
-  .route('/api/login', authHandler)
-  .use('/*', jwtMiddleware)
+  .route('/api', authHandler)
+  .use('/api/*', jwtMiddleware)
   .route('/api/tickets', ticketHandler)
   .route('/api/users', userHandler);
 
