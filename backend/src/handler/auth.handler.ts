@@ -1,6 +1,6 @@
 import { zValidator } from '@hono/zod-validator';
-import { LoginSchema } from '@ticketbasics/zod-schemas';
-import { compare } from 'bcryptjs';
+import { LoginSchema, SignupSchema } from '@ticketbasics/zod-schemas';
+import { compare, hash } from 'bcryptjs';
 import { Hono } from 'hono';
 
 import { UserRepository } from '@/repository';
@@ -25,6 +25,28 @@ const authHandler = new Hono()
     const token = await JwtService.generateToken(user.id);
 
     return c.json({ message: 'Login successful', token }, 200);
+  })
+  .post('/signup', zValidator('json', SignupSchema), async (c) => {
+    const { firstName, lastName, username, password } = c.req.valid('json');
+
+    const existingUser = await UserRepository.getByUsernameForAuth(username);
+
+    if (existingUser) {
+      throw new Error('Conflict username already exists!');
+    }
+
+    const hashedPassword = await hash(password, 10);
+
+    const newUser = await UserRepository.create({
+      username,
+      firstName,
+      lastName,
+      password: hashedPassword,
+    });
+
+    const token = await JwtService.generateToken(newUser.id);
+
+    return c.json({ message: 'Signup success', token }, 200);
   });
 
 export default authHandler;

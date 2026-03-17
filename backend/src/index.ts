@@ -4,12 +4,11 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 
+import { env } from '@/env';
+import authHandler from '@/handler/auth.handler';
+import ticketHandler from '@/handler/ticket.handler';
+import userHandler from '@/handler/user.handler';
 import { jwtMiddleware } from '@/middleware/jwt.middleware';
-
-import { env } from '../env';
-import authHandler from './handler/auth.handler';
-import ticketHandler from './handler/ticket.handler';
-import userHandler from './handler/user.handler';
 
 export const db = drizzle(env.DATABASE_URL);
 

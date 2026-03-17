@@ -1,6 +1,6 @@
-import type { UserCreatePayload, UserQuery, UserUpdatePayload } from '@ticketbasics/zod-schemas';
+import type { SignupPayload, UserQuery, UserUpdatePayload } from '@ticketbasics/zod-schemas';
 
-import { UserCreateSchema, UserSchema } from '@ticketbasics/zod-schemas';
+import { SignupSchema, UserSchema } from '@ticketbasics/zod-schemas';
 import { and, asc, between, count, desc, eq, gte, ilike, lte } from 'drizzle-orm';
 
 import { usersTable } from '@/database/schema';
@@ -108,8 +108,8 @@ export const UserRepository = {
     return result;
   },
 
-  async create(user: UserCreatePayload) {
-    const validated = UserCreateSchema.parse(user);
+  async create(user: SignupPayload) {
+    const validated = SignupSchema.parse(user);
 
     const [result] = await db
       .insert(usersTable)

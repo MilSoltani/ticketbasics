@@ -19,11 +19,9 @@ export const UserCreateSchema = UserSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
-}).extend({
-  password: z.string().min(12).max(128).regex(/[a-z]/, 'Must contain at least one lowercase letter').regex(/[A-Z]/, 'Must contain at least one uppercase letter').regex(/\d/, 'Must contain at least one number'),
 });
 
-export const UserUpdateSchema = UserCreateSchema.omit({ password: true }).partial();
+export const UserUpdateSchema = UserCreateSchema.partial();
 
 export const UserQuerySchema = z.object({
   id: z.coerce.number().int().optional(),
