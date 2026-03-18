@@ -4,17 +4,23 @@ import { sign } from 'hono/jwt';
 
 import { env } from '@/env';
 
-const EXPIRATION_SECONDS = 60 * 60 * Number(env.JWT_EXPIRE_HOURS);
+const ACCESS_TOKEN_EXPIRY = 60 * 15; // 15 minutes
+const REFRESH_TOKEN_EXPIRY = 60 * 60 * 24 * 7; // 7 days
 
 export const JwtService = {
-  async generateToken(userId: number): Promise<string> {
-    const now = Math.floor(Date.now() / 1000);
-    const payload: AuthPayload = {
-      sub: userId,
-      iat: now,
-      exp: now + EXPIRATION_SECONDS,
-    };
-    return sign(payload, env.JWT_SECRET);
+  async generateToken(sub: number, type: 'access' | 'refresh'): Promise<string> {
+    const iat = Math.floor(Date.now() / 1000);
+    const exp = type === 'access'
+      ? iat + ACCESS_TOKEN_EXPIRY
+      : iat + REFRESH_TOKEN_EXPIRY;
+
+    const payload: AuthPayload = { sub, iat, exp };
+
+    const secret = type === 'access'
+      ? env.JWT_ACCESS_SECRET
+      : env.JWT_REFRESH_SECRET;
+
+    return sign(payload, secret, 'HS256');
   },
 
   extractBearerToken(authHeader?: string): string {

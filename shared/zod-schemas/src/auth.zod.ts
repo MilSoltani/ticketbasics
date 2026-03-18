@@ -1,5 +1,7 @@
 import z from 'zod';
 
+import type { User } from './user.zod';
+
 import { UserCreateSchema } from './user.zod';
 
 export const LoginSchema = z.object({
@@ -19,4 +21,9 @@ export interface AuthPayload {
   iat: number;
   exp: number;
   [key: string]: string | number;
+}
+
+export interface AuthResponse {
+  user: Partial<User>;
+  message: string;
 }

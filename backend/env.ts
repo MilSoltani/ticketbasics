@@ -10,7 +10,8 @@ function requireEnv(key: string): string {
 }
 
 export const env = {
+  NODE_ENV: requireEnv('NODE_ENV'),
   DATABASE_URL: requireEnv('DATABASE_URL'),
-  JWT_SECRET: requireEnv('JWT_SECRET'),
-  JWT_EXPIRE_HOURS: requireEnv('JWT_EXPIRE_HOURS'),
+  JWT_ACCESS_SECRET: requireEnv('JWT_ACCESS_SECRET'),
+  JWT_REFRESH_SECRET: requireEnv('JWT_REFRESH_SECRET'),
 } as const;

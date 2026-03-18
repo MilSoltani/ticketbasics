@@ -12,8 +12,8 @@ export const jwtMiddleware = createMiddleware(async (c, next) => {
   }
 
   return jwt({
-    secret: env.JWT_SECRET,
+    secret: env.JWT_ACCESS_SECRET,
     alg: 'HS256',
-    cookie: 'auth_token',
+    cookie: 'access_token',
   })(c, next);
 });
