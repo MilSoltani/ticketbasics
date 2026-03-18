@@ -4,18 +4,16 @@ import { usersClient } from '@ticketbasics/backend/client';
 
 import { serializeQuery } from '@/utils/serialize-query.util';
 
+import { authFetch } from '../utils/auth-fetch.util';
+
 export async function getAllUsers(query: Partial<UserQuery>): Promise<{ data: User[]; pagination: PaginationType }> {
   const serializedQuery = serializeQuery(query);
 
-  const response = await usersClient.index.$get({
-    query: serializedQuery,
-  });
-
-  if (!response.ok) {
-    throw new Error(`API error: ${response.statusText}`);
-  }
-
-  const json = await response.json();
+  const json = await authFetch<{ data: User[]; pagination: PaginationType }>(
+    () => usersClient.index.$get({
+      query: serializedQuery,
+    }),
+  );
 
   if (!Array.isArray(json.data)) {
     throw new TypeError('Invalid response: expected array of users');
@@ -31,15 +29,11 @@ export async function getAllUsers(query: Partial<UserQuery>): Promise<{ data: Us
 }
 
 export async function getUserById(id: number): Promise<User> {
-  const response = await usersClient[':id'].$get({
-    param: { id: String(id) },
-  });
-
-  if (!response.ok) {
-    throw new Error(`API error: ${response.statusText}`);
-  }
-
-  const json = await response.json();
+  const json = await authFetch<{ data: User }>(
+    () => usersClient[':id'].$get({
+      param: { id: String(id) },
+    }),
+  );
 
   if (Array.isArray(json.data)) {
     throw new TypeError('Invalid response: expected single user');
@@ -51,28 +45,20 @@ export async function getUserById(id: number): Promise<User> {
 export async function updateUser(
   data: { id: number; changes: UserUpdatePayload },
 ): Promise<User> {
-  const response = await usersClient[':id'].$put({
-    param: { id: String(data.id) },
-    json: data.changes,
-  } as any);
-
-  if (!response.ok) {
-    throw new Error(`API error: ${response.statusText}`);
-  }
-
-  const json = await response.json();
+  const json = await authFetch<{ data: User }>(
+    () => usersClient[':id'].$put({
+      param: { id: String(data.id) },
+      json: data.changes,
+    } as any),
+  );
 
   return json.data;
 }
 
-export async function deleteUser(id: number) {
-  const response = await usersClient[':id'].$delete({ param: { id: String(id) } });
-
-  if (!response.ok) {
-    throw new Error(`API Error: ${response.statusText}`);
-  }
-
-  const json = await response.json();
+export async function deleteUser(id: number): Promise<User> {
+  const json = await authFetch<{ data: User }>(
+    () => usersClient[':id'].$delete({ param: { id: String(id) } }),
+  );
 
   return json.data;
 }
