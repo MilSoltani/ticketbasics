@@ -1,10 +1,10 @@
 # todos
 
+---
+
 ## Authentication
-- [ ] users table
-- [ ] identities table
-- [ ] sessions table
-- [ ] JWT
+- [x] basic jwt
+- [ ] Dual Token (short + refresh token)
 
 ## Authorization
 - [ ] RBAC

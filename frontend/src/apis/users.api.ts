@@ -1,4 +1,4 @@
-import type { PaginationType, User, UserCreatePayload, UserQuery, UserUpdatePayload } from '@ticketbasics/zod-schemas';
+import type { PaginationType, User, UserQuery, UserUpdatePayload } from '@ticketbasics/zod-schemas';
 
 import { usersClient } from '@ticketbasics/backend/client';
 
@@ -58,18 +58,6 @@ export async function updateUser(
 
   if (!response.ok) {
     throw new Error(`API error: ${response.statusText}`);
-  }
-
-  const json = await response.json();
-
-  return json.data;
-}
-
-export async function createUser(newUser: UserCreatePayload) {
-  const response = await usersClient.index.$post({ json: newUser });
-
-  if (!response.ok) {
-    throw new Error(`API Error: ${response.statusText}`);
   }
 
   const json = await response.json();

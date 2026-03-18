@@ -4,8 +4,14 @@ import type authHandler from './handler/auth.handler';
 import type ticketHandler from './handler/ticket.handler';
 import type userHandler from './handler/user.handler';
 
-export const ticketsClient = hc<typeof ticketHandler>('http://localhost:3000/api/tickets');
+export const ticketsClient = hc<typeof ticketHandler>('/api/tickets', {
+  init: { credentials: 'include' },
+});
 
-export const usersClient = hc<typeof userHandler>('http://localhost:3000/api/users');
+export const usersClient = hc<typeof userHandler>('/api/users', {
+  init: { credentials: 'include' },
+});
 
-export const authClient = hc<typeof authHandler>('http://localhost:3000/api');
+export const authClient = hc<typeof authHandler>('/api', {
+  init: { credentials: 'include' },
+});

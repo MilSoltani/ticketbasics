@@ -40,7 +40,7 @@ erDiagram
 
     identities {
         int id PK
-        int user_id FK
+        int userId FK
         string provider
         string platform_user_id
         datetime created_at
@@ -48,7 +48,7 @@ erDiagram
 
     sessions {
         int id PK
-        int user_id FK
+        int userId FK
         string refresh_token_hash
         string user_agent "optional"
         string ip_address "optional"

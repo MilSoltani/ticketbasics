@@ -4,8 +4,6 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import vueDevTools from 'vite-plugin-vue-devtools';
 
-const apiPathRegex = /^\/api/;
-
 export default defineConfig({
   plugins: [
     vue(),
@@ -21,7 +19,6 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: 'http://localhost:3000',
-        rewrite: path => path.replace(apiPathRegex, ''),
       },
     },
   },

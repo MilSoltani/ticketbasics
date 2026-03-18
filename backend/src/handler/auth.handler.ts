@@ -2,6 +2,7 @@ import { zValidator } from '@hono/zod-validator';
 import { LoginSchema, SignupSchema } from '@ticketbasics/zod-schemas';
 import { compare, hash } from 'bcryptjs';
 import { Hono } from 'hono';
+import { setCookie } from 'hono/cookie';
 
 import { UserRepository } from '@/repository';
 import { JwtService } from '@/service/jwt.service';
@@ -24,7 +25,14 @@ const authHandler = new Hono()
 
     const token = await JwtService.generateToken(user.id);
 
-    return c.json({ message: 'Login successful', token }, 200);
+    setCookie(c, 'auth_token', token, {
+      httpOnly: true,
+      secure: false,
+      path: '/',
+      sameSite: 'Lax',
+    });
+
+    return c.json({ message: 'Logged in' });
   })
   .post('/signup', zValidator('json', SignupSchema), async (c) => {
     const { firstName, lastName, username, password } = c.req.valid('json');
@@ -46,7 +54,14 @@ const authHandler = new Hono()
 
     const token = await JwtService.generateToken(newUser.id);
 
-    return c.json({ message: 'Signup success', token }, 200);
+    setCookie(c, 'auth_token', token, {
+      httpOnly: true,
+      secure: false,
+      path: '/',
+      sameSite: 'Lax',
+    });
+
+    return c.json({ message: 'Signup success' });
   });
 
 export default authHandler;

@@ -1,5 +1,3 @@
-import type { AuthPayload } from '@ticketbasics/zod-schemas';
-
 import { useMutation } from '@tanstack/vue-query';
 
 import { login, signup } from '@/apis';
@@ -7,12 +5,11 @@ import { login, signup } from '@/apis';
 export function useLogin() {
   const { mutate, mutateAsync, isPending, error, reset } = useMutation({
     mutationFn: async ({ username, password }: { username: string; password: string }) => {
-      const response = await login({ username, password });
-      return response.token;
+      await login({ username, password });
     },
 
-    onSuccess: (token: AuthPayload) => {
-      console.log(token);
+    onSuccess: () => {
+      console.log('Login successful');
     },
 
     onError: (err) => {
@@ -26,12 +23,11 @@ export function useLogin() {
 export function useSignup() {
   const { mutate, mutateAsync, isPending, error, reset } = useMutation({
     mutationFn: async ({ firstName, lastName, username, password }: { firstName: string; lastName: string; username: string; password: string }) => {
-      const response = await signup({ firstName, lastName, username, password });
-      return response.token;
+      await signup({ firstName, lastName, username, password });
     },
 
-    onSuccess: (token: AuthPayload) => {
-      console.log(token);
+    onSuccess: () => {
+      console.log('Signup successful');
     },
 
     onError: (err) => {

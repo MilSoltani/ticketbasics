@@ -1,5 +1,5 @@
 import { zValidator } from '@hono/zod-validator';
-import { UserCreateSchema, UserQuerySchema, UserUpdateSchema } from '@ticketbasics/zod-schemas';
+import { UserQuerySchema, UserUpdateSchema } from '@ticketbasics/zod-schemas';
 import { Hono } from 'hono';
 
 import { UserRepository } from '@/repository';
@@ -26,13 +26,6 @@ const userHandler = new Hono()
     }
 
     return c.json({ data: user });
-  })
-  .post('/', zValidator('json', UserCreateSchema), async (c) => {
-    const data = c.req.valid('json');
-
-    const newUser = await UserRepository.create(data);
-
-    return c.json({ data: newUser }, 201);
   })
   .put('/:id', zValidator('json', UserUpdateSchema), async (c) => {
     const id = Number(c.req.param('id'));
