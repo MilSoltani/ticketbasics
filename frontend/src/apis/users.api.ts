@@ -15,13 +15,6 @@ export async function getAllUsers(query: Partial<UserQuery>): Promise<{ data: Us
     }),
   );
 
-  if (!Array.isArray(json.data)) {
-    throw new TypeError('Invalid response: expected array of users');
-  }
-  else if (!json.pagination) {
-    throw new TypeError('Invalid response: expected pagination');
-  }
-
   return {
     data: json.data,
     pagination: json.pagination,
@@ -34,10 +27,6 @@ export async function getUserById(id: number): Promise<User> {
       param: { id: String(id) },
     }),
   );
-
-  if (Array.isArray(json.data)) {
-    throw new TypeError('Invalid response: expected single user');
-  }
 
   return json.data;
 }
