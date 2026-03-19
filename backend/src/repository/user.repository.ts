@@ -1,10 +1,9 @@
 import type { SignupPayload, UserQuery, UserUpdatePayload } from '@ticketbasics/zod-schemas';
 
+import { usersTable } from '@backend/database/schema';
+import { db } from '@backend/index';
 import { SignupSchema, UserSchema } from '@ticketbasics/zod-schemas';
 import { and, asc, between, count, desc, eq, gte, ilike, lte } from 'drizzle-orm';
-
-import { usersTable } from '@/database/schema';
-import { db } from '@/index';
 
 export const UserRepository = {
   async getAll(query: UserQuery) {
@@ -64,7 +63,7 @@ export const UserRepository = {
       .limit(limit)
       .offset(offset);
 
-    const [{ total }] = await db
+    const countResult = await db
       .select({ total: count() })
       .from(usersTable)
       .where(and(...conditions));
@@ -72,11 +71,11 @@ export const UserRepository = {
     return {
       data: UserSchema.array().parse(data),
       pagination: {
-        total: Number(total),
+        total: Number(countResult[0]?.total ?? 0),
         limit,
         offset,
         page: Math.floor(offset / limit) + 1,
-        pages: Math.ceil(Number(total) / limit),
+        pages: Math.ceil(Number(countResult[0]?.total ?? 0) / limit),
       },
     };
   },

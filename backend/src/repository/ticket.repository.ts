@@ -1,11 +1,10 @@
 import type { TicketQuery } from '@ticketbasics/zod-schemas';
 import type { InferInsertModel } from 'drizzle-orm';
 
+import { ticketsTable } from '@backend/database/schema';
+import { db } from '@backend/index';
 import { TicketCreateSchema, TicketSchema } from '@ticketbasics/zod-schemas';
 import { and, asc, between, count, desc, eq, gte, ilike, inArray, lte } from 'drizzle-orm';
-
-import { ticketsTable } from '@/database/schema';
-import { db } from '@/index';
 
 type InsertTicket = InferInsertModel<typeof ticketsTable>;
 
@@ -63,7 +62,7 @@ export const TicketRepository = {
       .limit(limit)
       .offset(offset);
 
-    const [{ total }] = await db
+    const countResult = await db
       .select({ total: count() })
       .from(ticketsTable)
       .where(and(...conditions));
@@ -71,11 +70,11 @@ export const TicketRepository = {
     return {
       data: TicketSchema.array().parse(data),
       pagination: {
-        total: Number(total),
+        total: Number(countResult[0]?.total ?? 0),
         limit,
         offset,
         page: Math.floor(offset / limit) + 1,
-        pages: Math.ceil(Number(total) / limit),
+        pages: Math.ceil(Number(countResult[0]?.total ?? 0) / limit),
       },
     };
   },

@@ -1,8 +1,7 @@
+import { UserRepository } from '@backend/repository';
 import { zValidator } from '@hono/zod-validator';
 import { UserQuerySchema, UserUpdateSchema } from '@ticketbasics/zod-schemas';
 import { Hono } from 'hono';
-
-import { UserRepository } from '@/repository';
 
 const userHandler = new Hono()
   .get('/', zValidator('query', UserQuerySchema), async (c) => {
@@ -10,7 +9,7 @@ const userHandler = new Hono()
 
     const result = await UserRepository.getAll(query);
 
-    return c.json(result);
+    return c.json(result, 200);
   })
   .get('/:id', async (c) => {
     const id = Number(c.req.param('id'));
@@ -25,7 +24,7 @@ const userHandler = new Hono()
       return c.json({ message: 'Not found' }, 404);
     }
 
-    return c.json({ data: user });
+    return c.json({ data: user }, 200);
   })
   .put('/:id', zValidator('json', UserUpdateSchema), async (c) => {
     const id = Number(c.req.param('id'));
@@ -42,7 +41,7 @@ const userHandler = new Hono()
       return c.json({ message: 'Not found' }, 404);
     }
 
-    return c.json({ data: updatedUser });
+    return c.json({ data: updatedUser }, 200);
   })
   .delete('/:id', async (c) => {
     const id = Number(c.req.param('id'));

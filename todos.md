@@ -4,7 +4,8 @@
 
 ## Authentication
 - [x] basic jwt
-- [ ] Dual Token (short + refresh token)
+- [x] Dual Token (short + refresh token)
+- [ ] persisting refresh token in db
 
 ## Authorization
 - [ ] RBAC

@@ -1,8 +1,7 @@
 import type { Context } from 'hono';
 
+import { env } from '@backend/../env';
 import { setCookie } from 'hono/cookie';
-
-import { env } from '@/env';
 
 const isProd = env.NODE_ENV === 'production';
 

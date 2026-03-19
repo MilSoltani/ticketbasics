@@ -1,8 +1,7 @@
+import { TicketRepository } from '@backend/repository';
 import { zValidator } from '@hono/zod-validator';
 import { TicketCreateSchema, TicketQuerySchema, TicketUpdateSchema } from '@ticketbasics/zod-schemas';
 import { Hono } from 'hono';
-
-import { TicketRepository } from '@/repository';
 
 const ticketHandler = new Hono()
   .get('/', zValidator('query', TicketQuerySchema), async (c) => {
@@ -10,14 +9,10 @@ const ticketHandler = new Hono()
 
     const result = await TicketRepository.getAll(query);
 
-    return c.json(result);
+    return c.json(result, 200);
   })
   .get('/:id', async (c) => {
     const id = Number(c.req.param('id'));
-
-    if (Number.isNaN(id)) {
-      return c.json({ message: 'Invalid ID' }, 400);
-    }
 
     const ticket = await TicketRepository.getById(id);
 
@@ -25,7 +20,7 @@ const ticketHandler = new Hono()
       return c.json({ message: 'Not found' }, 404);
     }
 
-    return c.json({ data: ticket });
+    return c.json({ data: ticket }, 200);
   })
   .post('/', zValidator('json', TicketCreateSchema), async (c) => {
     const data = c.req.valid('json');
@@ -37,10 +32,6 @@ const ticketHandler = new Hono()
   .put('/:id', zValidator('json', TicketUpdateSchema), async (c) => {
     const id = Number(c.req.param('id'));
 
-    if (Number.isNaN(id)) {
-      return c.json({ message: 'Invalid ID' }, 400);
-    }
-
     const data = c.req.valid('json');
 
     const updatedTicket = await TicketRepository.update(id, data);
@@ -49,14 +40,10 @@ const ticketHandler = new Hono()
       return c.json({ message: 'Not found' }, 404);
     }
 
-    return c.json({ data: updatedTicket });
+    return c.json({ data: updatedTicket }, 200);
   })
   .delete('/:id', async (c) => {
     const id = Number(c.req.param('id'));
-
-    if (Number.isNaN(id)) {
-      return c.json({ message: 'Invalid ID' }, 400);
-    }
 
     const deletedTicket = await TicketRepository.delete(id);
 

@@ -25,5 +25,5 @@ export interface AuthPayload {
 
 export interface AuthResponse {
   user: Partial<User>;
-  message: string;
+  message?: string;
 }

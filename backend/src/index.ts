@@ -1,14 +1,13 @@
+import { env } from '@backend/env';
+import authHandler from '@backend/handler/auth.handler';
+import ticketHandler from '@backend/handler/ticket.handler';
+import userHandler from '@backend/handler/user.handler';
+import { jwtMiddleware } from '@backend/middleware/jwt.middleware';
 import { serve } from '@hono/node-server';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
-
-import { env } from '@/env';
-import authHandler from '@/handler/auth.handler';
-import ticketHandler from '@/handler/ticket.handler';
-import userHandler from '@/handler/user.handler';
-import { jwtMiddleware } from '@/middleware/jwt.middleware';
 
 export const db = drizzle(env.DATABASE_URL);
 

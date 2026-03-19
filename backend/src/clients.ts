@@ -1,8 +1,8 @@
-import { hc } from 'hono/client';
+import type authHandler from '@backend/handler/auth.handler';
+import type ticketHandler from '@backend/handler/ticket.handler';
+import type userHandler from '@backend/handler/user.handler';
 
-import type authHandler from './handler/auth.handler';
-import type ticketHandler from './handler/ticket.handler';
-import type userHandler from './handler/user.handler';
+import { hc } from 'hono/client';
 
 export const ticketsClient = hc<typeof ticketHandler>('/api/tickets', {
   init: { credentials: 'include' },

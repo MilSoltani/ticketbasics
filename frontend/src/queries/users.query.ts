@@ -14,7 +14,7 @@ export function useGetAllUsers(initialQuery: Partial<UserQuery> = {}) {
     ...initialQuery,
   });
 
-  const { data: response, isLoading, error, isFetching } = useQuery<GetAllQueryResponse>({
+  const { data: response, isLoading, error, isFetching } = useQuery<GetAllQueryResponse<User>>({
     queryKey: computed(() => ['users', 'all', query.value]),
     queryFn: () => getAllUsers(query.value),
     staleTime: 1000 * 60 * 5,

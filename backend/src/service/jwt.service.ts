@@ -1,8 +1,7 @@
 import type { AuthPayload } from '@ticketbasics/zod-schemas';
 
+import { env } from '@backend/../env';
 import { sign } from 'hono/jwt';
-
-import { env } from '@/env';
 
 const ACCESS_TOKEN_EXPIRY = 60 * 15; // 15 minutes
 const REFRESH_TOKEN_EXPIRY = 60 * 60 * 24 * 7; // 7 days

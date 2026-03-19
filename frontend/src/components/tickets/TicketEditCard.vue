@@ -34,9 +34,14 @@ const { data: ticket, isLoading, error } = useGetTicketById(props.ticketId);
 
 const { mutate: updateTicket, isPending } = useUpdateTicket();
 
-const { defineField, handleSubmit, errors, resetForm } = useForm({
+const { defineField, handleSubmit, errors, setFieldValue } = useForm({
   validationSchema: toTypedSchema(TicketUpdateSchema),
-  initialValues: {},
+  initialValues: {
+    subject: '',
+    description: '',
+    priority: undefined,
+    status: undefined,
+  },
 });
 
 const [subject, subjectAttrs] = defineField('subject');
@@ -44,9 +49,12 @@ const [description, descriptionAttrs] = defineField('description');
 const [priority, priorityAttrs] = defineField('priority');
 const [status, statusAttrs] = defineField('status');
 
-watch(ticket, (newTicket, oldTicket) => {
-  if (newTicket && newTicket !== oldTicket) {
-    resetForm({ values: newTicket });
+watch(ticket, (newTicket) => {
+  if (newTicket) {
+    setFieldValue('subject', newTicket.subject);
+    setFieldValue('description', newTicket.description);
+    setFieldValue('priority', newTicket.priority);
+    setFieldValue('status', newTicket.status);
   }
 }, { immediate: true });
 

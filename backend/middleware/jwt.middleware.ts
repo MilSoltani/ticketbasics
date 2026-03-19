@@ -1,7 +1,7 @@
 import { createMiddleware } from 'hono/factory';
 import { jwt } from 'hono/jwt';
 
-import { env } from '@/env';
+import { env } from '../env';
 
 export const jwtMiddleware = createMiddleware(async (c, next) => {
   const publicPaths = ['/login', '/signup'];

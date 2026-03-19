@@ -1,16 +1,15 @@
 import type { JWTPayload } from 'hono/utils/jwt/types';
 
+import { env } from '@backend/../env';
+import { UserRepository } from '@backend/repository';
+import { CookieService } from '@backend/service/cookie.service';
+import { JwtService } from '@backend/service/jwt.service';
 import { zValidator } from '@hono/zod-validator';
 import { LoginSchema, SignupSchema } from '@ticketbasics/zod-schemas';
 import { compare, hash } from 'bcryptjs';
 import { Hono } from 'hono';
 import { getCookie } from 'hono/cookie';
 import { verify } from 'hono/jwt';
-
-import { env } from '@/env';
-import { UserRepository } from '@/repository';
-import { CookieService } from '@/service/cookie.service';
-import { JwtService } from '@/service/jwt.service';
 
 const authHandler = new Hono()
   .post('/login', zValidator('json', LoginSchema), async (c) => {
@@ -32,7 +31,9 @@ const authHandler = new Hono()
     CookieService.createAccessCookie(c, accessToken);
     CookieService.createRefreshCookie(c, refreshToken);
 
-    return c.json({ message: 'Logged in', user: { id: user.id, username: user.username } });
+    const userPayload = { id: user.id, username: user.username };
+
+    return c.json({ user: userPayload }, 200);
   })
   .post('/signup', zValidator('json', SignupSchema), async (c) => {
     const { firstName, lastName, username, password } = c.req.valid('json');
@@ -58,7 +59,9 @@ const authHandler = new Hono()
     CookieService.createAccessCookie(c, accessToken);
     CookieService.createRefreshCookie(c, refreshToken);
 
-    return c.json({ message: 'Signed up!', user: { id: newUser.id, username: newUser.username } });
+    const userPayload = { id: newUser.id, username: newUser.username };
+
+    return c.json({ user: userPayload }, 200);
   })
   .post('/refresh', async (c) => {
     const refreshToken = getCookie(c, 'refresh_token');
@@ -88,7 +91,9 @@ const authHandler = new Hono()
 
     CookieService.createAccessCookie(c, newAccessToken);
 
-    return c.json({ message: 'Token refreshed', user: { id: user?.id, username: user?.username } });
+    const userPayload = { id: user.id, username: user.username };
+
+    return c.json({ user: userPayload }, 200);
   });
 
 export default authHandler;

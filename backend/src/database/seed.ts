@@ -1,7 +1,6 @@
+import * as schema from '@backend/database/schema/index.js';
+import { db } from '@backend/index.js';
 import { seed } from 'drizzle-seed';
-
-import * as schema from '@/database/schema/index.js';
-import { db } from '@/index.js';
 
 type Seeder = (count: number) => Promise<void>;
 

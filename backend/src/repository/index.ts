@@ -1,2 +1,2 @@
-export * from '@/repository/ticket.repository';
-export * from '@/repository/user.repository';
+export * from '@backend/repository/ticket.repository';
+export * from '@backend/repository/user.repository';

@@ -14,7 +14,7 @@ export function useGetAllTickets(initialQuery: Partial<TicketQuery> = {}) {
     ...initialQuery,
   });
 
-  const { data: response, isLoading, error, isFetching } = useQuery<GetAllQueryResponse>({
+  const { data: response, isLoading, error, isFetching } = useQuery<GetAllQueryResponse<Ticket>>({
     queryKey: computed(() => ['tickets', 'all', query.value]),
     queryFn: () => getAllTickets(query.value),
     staleTime: 1000 * 60 * 5,
