@@ -54,8 +54,15 @@ export const TicketRepository = {
     const limit = query.limit ?? 25;
     const offset = query.offset ?? 0;
 
+    const columnsArray = query.columns ?? [];
+
+    const select = columnsArray.reduce((acc, columnName) => {
+      acc[columnName] = ticketsTable[columnName as keyof typeof ticketsTable];
+      return acc;
+    }, {} as Record<string, any>);
+
     const data = await db
-      .select()
+      .select(select)
       .from(ticketsTable)
       .where(and(...conditions))
       .orderBy(orderBy)

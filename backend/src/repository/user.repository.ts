@@ -55,8 +55,15 @@ export const UserRepository = {
     const limit = query.limit ?? 25;
     const offset = query.offset ?? 0;
 
+    const columnsArray = query.columns ?? [];
+
+    const select = columnsArray.reduce((acc, columnName) => {
+      acc[columnName] = usersTable[columnName as keyof typeof usersTable];
+      return acc;
+    }, {} as Record<string, any>);
+
     const data = await db
-      .select()
+      .select(select)
       .from(usersTable)
       .where(and(...conditions))
       .orderBy(orderBy)
