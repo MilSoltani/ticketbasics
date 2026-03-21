@@ -4,6 +4,7 @@ import {
   Bell,
   ChevronsUpDown,
   CreditCard,
+  LogIn,
   LogOut,
   Sparkles,
 } from 'lucide-vue-next';
@@ -106,9 +107,16 @@ const { isMobile } = useSidebar();
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <LogOut />
-            Log out
+          <DropdownMenuItem class="flex justify-between">
+            <RouterLink v-if="true" to="/login" class="flex justify-start gap-2">
+              <LogIn />
+              Login
+            </RouterLink>
+
+            <RouterLink v-else to="/logout" class="flex justify-start gap-2">
+              <LogOut />
+              Logout
+            </RouterLink>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
