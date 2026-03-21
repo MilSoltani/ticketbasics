@@ -25,3 +25,5 @@
 
 ## Seeding
 - [ ] adding a better seeder
+
+## relation filtering (ticket based on user.username)
