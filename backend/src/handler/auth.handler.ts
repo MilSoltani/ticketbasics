@@ -5,7 +5,6 @@ import { UserRepository } from '@backend/repository';
 import { CookieService } from '@backend/service/cookie.service';
 import { SessionService } from '@backend/service/session.service';
 import { TokenService } from '@backend/service/token.service';
-import { HTTP, response } from '@backend/utils/http-response.util';
 import { zValidator } from '@hono/zod-validator';
 import { LoginSchema, SignupSchema } from '@ticketbasics/zod-schemas';
 import { compare, hash } from 'bcryptjs';
@@ -37,12 +36,12 @@ const authHandler = new Hono()
     const isValid = await compare(password, hashToCheck);
 
     if (!user || !isValid) {
-      return response(c, HTTP.UNAUTHORIZED);
+      return c.json({ error: 'Unauthorized' }, 401);
     }
 
     const userPayload = await issueJWT(c, user);
 
-    return response(c, HTTP.OK, userPayload);
+    return c.json(userPayload, 200);
   })
   .post('/signup', zValidator('json', SignupSchema), async (c) => {
     const { firstName, lastName, username, password } = c.req.valid('json');
@@ -50,7 +49,7 @@ const authHandler = new Hono()
     const existingUser = await UserRepository.getByUsernameForAuth(username);
 
     if (existingUser) {
-      return response(c, HTTP.CONFLICT);
+      return c.json({ error: 'Conflict' }, 409);
     }
 
     const hashedPassword = await hash(password, 12);
@@ -64,12 +63,13 @@ const authHandler = new Hono()
 
     const userPayload = await issueJWT(c, newUser);
 
-    return response(c, HTTP.OK, userPayload);
+    return c.json(userPayload, 200);
   })
   .post('/refresh', async (c) => {
     const refreshToken = getCookie(c, 'refresh_token');
-    if (!refreshToken)
-      return response(c, HTTP.UNAUTHORIZED);
+    if (!refreshToken) {
+      return c.json({ error: 'Unauthorized' }, 401);
+    }
 
     try {
       const { user, newAccessToken, newRefreshToken } = await SessionService.refreshSession(refreshToken);
@@ -77,10 +77,10 @@ const authHandler = new Hono()
       CookieService.createAccessCookie(c, newAccessToken);
       CookieService.createRefreshCookie(c, newRefreshToken);
 
-      return response(c, HTTP.OK, { user });
+      return c.json({ user }, 200);
     }
     catch {
-      return response(c, HTTP.UNAUTHORIZED);
+      return c.json({ error: 'Unauthorized' }, 401);
     }
   });
 
