@@ -11,6 +11,7 @@ export function useGetAllTickets(initialQuery: Partial<TicketQuery> = {}) {
     order: 'desc',
     limit: 25,
     offset: 0,
+    columns: [],
     ...initialQuery,
   });
 

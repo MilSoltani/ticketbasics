@@ -55,8 +55,20 @@ export const UserRepository = {
     const limit = query.limit ?? 25;
     const offset = query.offset ?? 0;
 
-    const data = await db
-      .select()
+    const columnsArray = query.columns ?? [];
+
+    const selected = columnsArray.length > 0
+      ? db.select(
+          columnsArray.reduce((acc, col) => {
+            if (col in usersTable) {
+              acc[col] = usersTable[col as keyof typeof usersTable];
+            }
+            return acc;
+          }, {} as Record<string, any>),
+        )
+      : db.select();
+
+    const data = await selected
       .from(usersTable)
       .where(and(...conditions))
       .orderBy(orderBy)
@@ -69,7 +81,7 @@ export const UserRepository = {
       .where(and(...conditions));
 
     return {
-      data: UserSchema.array().parse(data),
+      data: UserSchema.partial().array().parse(data),
       pagination: {
         total: Number(countResult[0]?.total ?? 0),
         limit,

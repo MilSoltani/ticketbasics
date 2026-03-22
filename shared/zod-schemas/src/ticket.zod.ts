@@ -54,6 +54,17 @@ export const TicketQuerySchema = z.object({
   order: SortOrderEnum.optional(),
   limit: z.coerce.number().int().min(1).max(100).optional(),
   offset: z.coerce.number().int().min(0).optional(),
+  columns: z.union([z.string(), z.array(z.string())])
+    .optional()
+    .transform((val) => {
+      if (!val)
+        return undefined;
+      if (typeof val === 'string')
+        return val.split(',');
+      return val;
+    })
+    .pipe(z.array(TicketSchema.keyof()))
+    .optional(),
 });
 
 /* Constants --------------------------------- */

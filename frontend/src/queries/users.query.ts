@@ -11,6 +11,7 @@ export function useGetAllUsers(initialQuery: Partial<UserQuery> = {}) {
     order: 'desc',
     limit: 25,
     offset: 0,
+    columns: [],
     ...initialQuery,
   });
 
