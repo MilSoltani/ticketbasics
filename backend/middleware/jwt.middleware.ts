@@ -1,19 +1,32 @@
+import type { JWTPayload } from 'hono/utils/jwt/types';
+
 import { createMiddleware } from 'hono/factory';
 import { jwt } from 'hono/jwt';
 
 import { env } from '../env';
 
-export const jwtMiddleware = createMiddleware(async (c, next) => {
-  const publicPaths = ['/login', '/signup'];
-  const path = new URL(c.req.url).pathname;
+export interface AppJwtVariables {
+  jwtPayload: JWTPayload;
+  userId: number;
+}
 
-  if (publicPaths.some(p => path.endsWith(p))) {
+export const jwtMiddleware = createMiddleware(async (c, next) => {
+  const path = new URL(c.req.url).pathname;
+  if (['/login', '/signup'].some(p => path.endsWith(p))) {
     return next();
   }
 
-  return jwt({
+  await jwt({
     secret: env.JWT_ACCESS_SECRET,
     alg: 'HS256',
     cookie: 'access_token',
-  })(c, next);
+  })(c, async () => {
+    const payload = c.get('jwtPayload') as JWTPayload;
+
+    if (payload && payload.sub) {
+      c.set('userId', payload.sub);
+    }
+
+    await next();
+  });
 });

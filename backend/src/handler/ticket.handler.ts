@@ -1,9 +1,11 @@
+import type { AppJwtVariables } from '@backend/middleware/jwt.middleware';
+
 import { TicketRepository } from '@backend/repository';
 import { zValidator } from '@hono/zod-validator';
 import { TicketCreateSchema, TicketQuerySchema, TicketUpdateSchema } from '@ticketbasics/zod-schemas';
 import { Hono } from 'hono';
 
-const ticketHandler = new Hono()
+const ticketHandler = new Hono<{ Variables: AppJwtVariables }>()
   .get('/', zValidator('query', TicketQuerySchema), async (c) => {
     const query = c.req.valid('query');
 
@@ -24,8 +26,12 @@ const ticketHandler = new Hono()
   })
   .post('/', zValidator('json', TicketCreateSchema), async (c) => {
     const data = c.req.valid('json');
+    const creatorId = c.get('userId');
 
-    const newTicket = await TicketRepository.create(data);
+    const newTicket = await TicketRepository.create({
+      ...data,
+      creatorId,
+    });
 
     return c.json({ data: newTicket }, 201);
   })

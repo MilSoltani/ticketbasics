@@ -1,3 +1,5 @@
+import type { AppJwtVariables } from '@backend/middleware/jwt.middleware';
+
 import { env } from '@backend/env';
 import authHandler from '@backend/handler/auth.handler';
 import ticketHandler from '@backend/handler/ticket.handler';
@@ -12,7 +14,7 @@ import { logger } from 'hono/logger';
 
 export const db = drizzle(env.DATABASE_URL);
 
-const app = new Hono()
+const app = new Hono<{ Variables: AppJwtVariables }>()
   .use('/*', cors())
   .use(logger())
   .route('/api', authHandler)

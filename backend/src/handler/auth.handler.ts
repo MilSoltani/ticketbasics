@@ -1,3 +1,4 @@
+import type { AppJwtVariables } from '@backend/middleware/jwt.middleware';
 import type { User } from '@ticketbasics/zod-schemas';
 import type { Context } from 'hono';
 
@@ -25,7 +26,7 @@ async function issueJWT(c: Context, user: User) {
   return { id: user.id, username: user.username };
 }
 
-const authHandler = new Hono()
+const authHandler = new Hono<{ Variables: AppJwtVariables }>()
   .post('/login', zValidator('json', LoginSchema), async (c) => {
     const { username, password } = c.req.valid('json');
 

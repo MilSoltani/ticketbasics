@@ -1,9 +1,11 @@
+import type { AppJwtVariables } from '@backend/middleware/jwt.middleware';
+
 import { UserRepository } from '@backend/repository';
 import { zValidator } from '@hono/zod-validator';
 import { UserQuerySchema, UserUpdateSchema } from '@ticketbasics/zod-schemas';
 import { Hono } from 'hono';
 
-const userHandler = new Hono()
+const userHandler = new Hono<{ Variables: AppJwtVariables }>()
   .get('/', zValidator('query', UserQuerySchema), async (c) => {
     const query = c.req.valid('query');
 
