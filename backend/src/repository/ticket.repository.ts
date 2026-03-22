@@ -5,6 +5,7 @@ import { ticketsTable } from '@backend/database/schema';
 import { db } from '@backend/index';
 import { TicketCreateSchema, TicketSchema } from '@ticketbasics/zod-schemas';
 import { and, asc, between, count, desc, eq, gte, ilike, inArray, lte } from 'drizzle-orm';
+import z from 'zod';
 
 type InsertTicket = InferInsertModel<typeof ticketsTable>;
 
@@ -105,7 +106,9 @@ export const TicketRepository = {
   },
 
   async create(ticket: InsertTicket) {
-    const validated = TicketCreateSchema.parse(ticket);
+    const validated = TicketCreateSchema.extend({
+      creatorId: z.number().int(),
+    }).parse(ticket);
 
     const [result] = await db
       .insert(ticketsTable)

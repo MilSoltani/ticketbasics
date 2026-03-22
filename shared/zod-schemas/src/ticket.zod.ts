@@ -11,6 +11,8 @@ export const TicketPriorityEnum = z.enum(['low', 'medium', 'high', 'urgent']);
 
 export const TicketSchema = z.object({
   id: z.number().int(),
+  creatorId: z.number().int(),
+  agentId: z.number().int().nullable().optional(),
   subject: z.string().min(1, 'Subject is required').max(512),
   description: z.string().min(1, 'Description is required'),
   status: TicketStatusEnum.default('open'),
@@ -23,6 +25,7 @@ export const TicketCreateSchema = TicketSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+  creatorId: true,
 }).extend({
   status: TicketStatusEnum.optional(),
   priority: TicketPriorityEnum.optional(),
