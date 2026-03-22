@@ -29,10 +29,13 @@ const authHandler = new Hono()
     }
 
     const accessToken = await JwtService.generateToken(user.id, 'access');
-    const refreshToken = await JwtService.generateToken(user.id, 'refresh');
+
+    const tokenId = crypto.randomUUID();
+    const refreshToken = await JwtService.generateToken(user.id, 'refresh', tokenId);
 
     const userAgent = c.req.header('User-Agent');
-    await SessionService.createSession(user.id, refreshToken, crypto.randomUUID(), userAgent);
+
+    await SessionService.createSession(user.id, refreshToken, tokenId, userAgent);
 
     CookieService.createAccessCookie(c, accessToken);
     CookieService.createRefreshCookie(c, refreshToken);
@@ -59,11 +62,14 @@ const authHandler = new Hono()
       password: hashedPassword,
     });
 
+    const tokenId = crypto.randomUUID();
+
     const accessToken = await JwtService.generateToken(newUser.id, 'access');
-    const refreshToken = await JwtService.generateToken(newUser.id, 'refresh');
+    const refreshToken = await JwtService.generateToken(newUser.id, 'refresh', tokenId);
 
     const userAgent = c.req.header('User-Agent');
-    await SessionService.createSession(newUser.id, refreshToken, crypto.randomUUID(), userAgent);
+
+    await SessionService.createSession(newUser.id, refreshToken, tokenId, userAgent);
 
     CookieService.createAccessCookie(c, accessToken);
     CookieService.createRefreshCookie(c, refreshToken);
@@ -97,11 +103,13 @@ const authHandler = new Hono()
     if (!valid)
       return response(c, HTTP.UNAUTHORIZED);
 
-    const newRefreshToken = await JwtService.generateToken(payload.sub as number, 'refresh');
+    const tokenId = crypto.randomUUID();
+    const newRefreshToken = await JwtService.generateToken(payload.sub as number, 'refresh', tokenId);
     const newHash = await hash(newRefreshToken, 12);
 
     await SessionRepository.update(session.id, {
       refreshTokenHash: newHash,
+      tokenId,
       expiresAt: new Date(Date.now() + REFRESH_TOKEN_EXPIRY),
     });
 
