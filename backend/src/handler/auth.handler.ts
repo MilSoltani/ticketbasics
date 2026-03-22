@@ -1,18 +1,30 @@
-import type { JWTPayload } from 'hono/utils/jwt/types';
+import type { User } from '@ticketbasics/zod-schemas';
+import type { Context } from 'hono';
 
-import { env } from '@backend/../env';
 import { UserRepository } from '@backend/repository';
-import { SessionRepository } from '@backend/repository/session.repository';
 import { CookieService } from '@backend/service/cookie.service';
-import { JwtService, REFRESH_TOKEN_EXPIRY } from '@backend/service/jwt.service';
 import { SessionService } from '@backend/service/session.service';
+import { TokenService } from '@backend/service/token.service';
 import { HTTP, response } from '@backend/utils/http-response.util';
 import { zValidator } from '@hono/zod-validator';
 import { LoginSchema, SignupSchema } from '@ticketbasics/zod-schemas';
 import { compare, hash } from 'bcryptjs';
 import { Hono } from 'hono';
 import { getCookie } from 'hono/cookie';
-import { verify } from 'hono/jwt';
+
+async function issueJWT(c: Context, user: User) {
+  const tokenId = crypto.randomUUID();
+  const accessToken = await TokenService.generateToken(user.id, 'access');
+  const refreshToken = await TokenService.generateToken(user.id, 'refresh', tokenId);
+
+  const userAgent = c.req.header('User-Agent');
+  await SessionService.createSession(user.id, refreshToken, tokenId, userAgent);
+
+  CookieService.createAccessCookie(c, accessToken);
+  CookieService.createRefreshCookie(c, refreshToken);
+
+  return { id: user.id, username: user.username };
+}
 
 const authHandler = new Hono()
   .post('/login', zValidator('json', LoginSchema), async (c) => {
@@ -28,19 +40,7 @@ const authHandler = new Hono()
       return response(c, HTTP.UNAUTHORIZED);
     }
 
-    const accessToken = await JwtService.generateToken(user.id, 'access');
-
-    const tokenId = crypto.randomUUID();
-    const refreshToken = await JwtService.generateToken(user.id, 'refresh', tokenId);
-
-    const userAgent = c.req.header('User-Agent');
-
-    await SessionService.createSession(user.id, refreshToken, tokenId, userAgent);
-
-    CookieService.createAccessCookie(c, accessToken);
-    CookieService.createRefreshCookie(c, refreshToken);
-
-    const userPayload = { id: user.id, username: user.username };
+    const userPayload = await issueJWT(c, user);
 
     return response(c, HTTP.OK, userPayload);
   })
@@ -62,65 +62,26 @@ const authHandler = new Hono()
       password: hashedPassword,
     });
 
-    const tokenId = crypto.randomUUID();
-
-    const accessToken = await JwtService.generateToken(newUser.id, 'access');
-    const refreshToken = await JwtService.generateToken(newUser.id, 'refresh', tokenId);
-
-    const userAgent = c.req.header('User-Agent');
-
-    await SessionService.createSession(newUser.id, refreshToken, tokenId, userAgent);
-
-    CookieService.createAccessCookie(c, accessToken);
-    CookieService.createRefreshCookie(c, refreshToken);
-
-    const userPayload = { id: newUser.id, username: newUser.username };
+    const userPayload = await issueJWT(c, newUser);
 
     return response(c, HTTP.OK, userPayload);
   })
   .post('/refresh', async (c) => {
     const refreshToken = getCookie(c, 'refresh_token');
-
     if (!refreshToken)
       return response(c, HTTP.UNAUTHORIZED);
 
-    const payload = await verify(refreshToken, env.JWT_REFRESH_SECRET, 'HS256') as JWTPayload;
+    try {
+      const { user, newAccessToken, newRefreshToken } = await SessionService.refreshSession(refreshToken);
 
-    if (!payload?.sub || !payload.jti)
-      return response(c, HTTP.UNAUTHORIZED);
+      CookieService.createAccessCookie(c, newAccessToken);
+      CookieService.createRefreshCookie(c, newRefreshToken);
 
-    const session = await SessionRepository.getByTokenId(payload.jti as string);
-
-    if (!session)
-      return response(c, HTTP.UNAUTHORIZED);
-
-    if (session.revokedAt || session.expiresAt <= new Date()) {
+      return response(c, HTTP.OK, { user });
+    }
+    catch {
       return response(c, HTTP.UNAUTHORIZED);
     }
-
-    const valid = await compare(refreshToken, session.refreshTokenHash);
-
-    if (!valid)
-      return response(c, HTTP.UNAUTHORIZED);
-
-    const tokenId = crypto.randomUUID();
-    const newRefreshToken = await JwtService.generateToken(payload.sub as number, 'refresh', tokenId);
-    const newHash = await hash(newRefreshToken, 12);
-
-    await SessionRepository.update(session.id, {
-      refreshTokenHash: newHash,
-      tokenId,
-      expiresAt: new Date(Date.now() + REFRESH_TOKEN_EXPIRY),
-    });
-
-    const newAccessToken = await JwtService.generateToken(payload.sub as number, 'access');
-
-    CookieService.createAccessCookie(c, newAccessToken);
-    CookieService.createRefreshCookie(c, newRefreshToken);
-
-    const user = await UserRepository.getById(payload.sub as number);
-
-    return response(c, HTTP.OK, { user: { id: user.id, username: user.username } });
   });
 
 export default authHandler;

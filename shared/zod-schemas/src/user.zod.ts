@@ -8,8 +8,8 @@ export const userSortEnum = z.enum(['firstName', 'lastName', 'username', 'create
 
 export const UserSchema = z.object({
   id: z.number().int(),
-  firstName: z.string().max(32).optional(),
-  lastName: z.string().max(32).optional(),
+  firstName: z.string().max(32).nullable(),
+  lastName: z.string().max(32).nullable(),
   username: z.string().min(5).max(32),
   createdAt: z.date(),
   updatedAt: z.date(),

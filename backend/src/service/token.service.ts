@@ -3,10 +3,10 @@ import type { AuthPayload } from '@ticketbasics/zod-schemas';
 import { env } from '@backend/../env';
 import { sign } from 'hono/jwt';
 
-const ACCESS_TOKEN_EXPIRY = 60 * 1; // 15 minutes
+const ACCESS_TOKEN_EXPIRY = 60 * 15; // 15 minutes
 export const REFRESH_TOKEN_EXPIRY = 60 * 60 * 24 * 7; // 7 days
 
-export const JwtService = {
+export const TokenService = {
   async generateToken(sub: number, type: 'access' | 'refresh', tokenId?: string): Promise<string> {
     const iat = Math.floor(Date.now() / 1000);
     const exp = type === 'access'

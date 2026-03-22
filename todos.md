@@ -2,11 +2,6 @@
 
 ---
 
-## Authentication
-- [x] basic jwt
-- [x] Dual Token (short + refresh token)
-- [ ] persisting refresh token in db
-
 ## Authorization
 - [ ] RBAC
 - [ ] vue directive: `vue-user-can="view:tickets,edit:tickets"`
