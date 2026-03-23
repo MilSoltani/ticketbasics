@@ -1,11 +1,13 @@
-import type { TicketQuery } from '@ticketbasics/zod-schemas';
+import type { Ticket, TicketQuery } from '@ticketbasics/zod-schemas';
 import type { InferInsertModel } from 'drizzle-orm';
 
 import { db } from '@backend/database';
 import { ticketsTable } from '@backend/database/schema';
-import { TicketCreateSchema, TicketSchema } from '@ticketbasics/zod-schemas';
+import { TicketCreateSchema, TicketNestedSchema, TicketSchema } from '@ticketbasics/zod-schemas';
 import { and, asc, between, count, desc, eq, gte, ilike, inArray, lte } from 'drizzle-orm';
 import z from 'zod';
+
+import { UserRepository } from './user.repository';
 
 type InsertTicket = InferInsertModel<typeof ticketsTable>;
 
@@ -70,7 +72,7 @@ export const TicketRepository = {
 
     const data = await selected
       .from(ticketsTable)
-      .where(and(...conditions))
+      .where(conditions.length ? and(...conditions) : undefined)
       .orderBy(orderBy)
       .limit(limit)
       .offset(offset);
@@ -78,10 +80,12 @@ export const TicketRepository = {
     const countResult = await db()
       .select({ total: count() })
       .from(ticketsTable)
-      .where(and(...conditions));
+      .where(conditions.length ? and(...conditions) : undefined);
+
+    const tickets = await attachUsers(data as Ticket[]);
 
     return {
-      data: TicketSchema.partial().array().parse(data),
+      data: TicketNestedSchema.partial().array().parse(tickets),
       pagination: {
         total: Number(countResult[0]?.total ?? 0),
         limit,
@@ -102,7 +106,8 @@ export const TicketRepository = {
       throw new Error(`Ticket with id ${id} not found`);
     }
 
-    return TicketSchema.parse(result);
+    const [ticket] = await attachUsers([result]);
+    return TicketNestedSchema.parse(ticket);
   },
 
   async create(ticket: InsertTicket) {
@@ -119,7 +124,8 @@ export const TicketRepository = {
       throw new Error('Failed to create ticket');
     }
 
-    return TicketSchema.parse(result);
+    const [newTicket] = await attachUsers([result]);
+    return TicketNestedSchema.parse(newTicket);
   },
 
   async update(id: number, data: Partial<InsertTicket>) {
@@ -135,7 +141,8 @@ export const TicketRepository = {
       throw new Error(`Failed to update ticket with id ${id}`);
     }
 
-    return TicketSchema.parse(result);
+    const [ticket] = await attachUsers([result]);
+    return TicketNestedSchema.parse(ticket);
   },
 
   async delete(id: number) {
@@ -148,6 +155,22 @@ export const TicketRepository = {
       throw new Error(`Ticket with id ${id} not found`);
     }
 
-    return TicketSchema.parse(result);
+    const [ticket] = await attachUsers([result]);
+    return TicketNestedSchema.parse(ticket);
   },
 };
+
+async function attachUsers(rows: Ticket[]) {
+  const userIds = [...new Set(
+    rows.flatMap(r => [r.creatorId, r.agentId]),
+  )].filter((id): id is number => id !== null && id !== undefined);
+
+  const users = await UserRepository.getEssentialUsers(userIds);
+
+  return rows.map((row) => {
+    const creator = users.get(row.creatorId);
+    const agent = row.agentId ? users.get(row.agentId) : null;
+
+    return { ...row, creator, agent };
+  });
+}

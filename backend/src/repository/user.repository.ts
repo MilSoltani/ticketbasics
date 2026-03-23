@@ -1,9 +1,9 @@
-import type { SignupPayload, UserQuery, UserUpdatePayload } from '@ticketbasics/zod-schemas';
+import type { SignupPayload, UserEssential, UserQuery, UserUpdatePayload } from '@ticketbasics/zod-schemas';
 
 import { db } from '@backend/database';
 import { usersTable } from '@backend/database/schema';
 import { SignupSchema, UserSchema } from '@ticketbasics/zod-schemas';
-import { and, asc, between, count, desc, eq, gte, ilike, lte } from 'drizzle-orm';
+import { and, asc, between, count, desc, eq, gte, ilike, inArray, lte } from 'drizzle-orm';
 
 export const UserRepository = {
   async getAll(query: UserQuery) {
@@ -161,5 +161,16 @@ export const UserRepository = {
     }
 
     return UserSchema.parse(result);
+  },
+
+  async getEssentialUsers(ids: Array<number>): Promise<Map<number, UserEssential>> {
+    const users = ids.length > 0
+      ? await db()
+          .select({ id: usersTable.id, username: usersTable.username })
+          .from(usersTable)
+          .where(inArray(usersTable.id, ids))
+      : [];
+
+    return new Map(users.map(u => [u.id, u]));
   },
 };

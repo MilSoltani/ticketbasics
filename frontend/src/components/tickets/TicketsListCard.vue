@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Ticket } from '@ticketbasics/zod-schemas';
+import type { TicketNested } from '@ticketbasics/zod-schemas';
 
 import { MoreHorizontal } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
@@ -19,7 +19,7 @@ import TableRow from '@/components/ui/table/TableRow.vue';
 import { useDeleteTicket } from '@/queries';
 
 const props = withDefaults(defineProps<{
-  tickets?: Ticket[];
+  tickets?: TicketNested[];
 }>(), {
   tickets: () => [],
 });
@@ -54,10 +54,15 @@ function handleDelete(id: number) {
               <TableHead class="font-bold">
                 Subject
               </TableHead>
+
+              <TableHead class="font-bold">
+                Agent
+              </TableHead>
+
               <TableHead class="font-bold w-24">
                 Priority
               </TableHead>
-              <TableHead class="font-bold w-22">
+              <TableHead class="font-bold w-24">
                 Status
               </TableHead>
 
@@ -79,8 +84,12 @@ function handleDelete(id: number) {
                 {{ ticket.subject }}
 
                 <div class="text-muted-foreground text-sm">
-                  username - {{ ticket.createdAt }}
+                  {{ ticket.creator?.username }} - {{ ticket.createdAt }}
                 </div>
+              </TableCell>
+
+              <TableCell class="py-4">
+                {{ ticket.agent?.username ?? '-' }}
               </TableCell>
 
               <TableCell class="py-4">

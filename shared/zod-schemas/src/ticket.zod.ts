@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { SortOrderEnum } from './common.zod';
+import { UserEssentialsSchema } from './user.zod';
 
 /* Enums --------------------------------- */
 
@@ -12,13 +13,18 @@ export const TicketPriorityEnum = z.enum(['low', 'medium', 'high', 'urgent']);
 export const TicketSchema = z.object({
   id: z.number().int(),
   creatorId: z.number().int(),
-  agentId: z.number().int().nullable().optional(),
+  agentId: z.number().int().nullable(),
   subject: z.string().min(1, 'Subject is required').max(512),
   description: z.string().min(1, 'Description is required'),
   status: TicketStatusEnum.default('open'),
   priority: TicketPriorityEnum.default('low'),
   createdAt: z.date(),
   updatedAt: z.date(),
+});
+
+export const TicketNestedSchema = TicketSchema.extend({
+  creator: UserEssentialsSchema,
+  agent: UserEssentialsSchema.nullable(),
 });
 
 export const TicketCreateSchema = TicketSchema.omit({
@@ -78,6 +84,7 @@ export const TICKET_SORT_OPTIONS = ['subject', 'createdAt', 'priority', 'status'
 /* Types --------------------------------- */
 
 export type Ticket = z.infer<typeof TicketSchema>;
+export type TicketNested = z.infer<typeof TicketNestedSchema>;
 export type TicketCreatePayload = z.infer<typeof TicketCreateSchema>;
 export type TicketUpdatePayload = z.infer<typeof TicketUpdateSchema>;
 export type TicketStatus = z.infer<typeof TicketStatusEnum>;

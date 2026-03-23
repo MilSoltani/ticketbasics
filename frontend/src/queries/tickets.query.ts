@@ -1,4 +1,4 @@
-import type { GetAllQueryResponse, Ticket, TicketQuery } from '@ticketbasics/zod-schemas';
+import type { GetAllQueryResponse, TicketNested, TicketQuery } from '@ticketbasics/zod-schemas';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 import { computed, ref } from 'vue';
@@ -15,7 +15,7 @@ export function useGetAllTickets(initialQuery: Partial<TicketQuery> = {}) {
     ...initialQuery,
   });
 
-  const { data: response, isLoading, error, isFetching } = useQuery<GetAllQueryResponse<Ticket>>({
+  const { data: response, isLoading, error, isFetching } = useQuery<GetAllQueryResponse<TicketNested>>({
     queryKey: computed(() => ['tickets', 'all', query.value]),
     queryFn: () => getAllTickets(query.value),
     staleTime: 1000 * 60 * 5,
@@ -53,7 +53,7 @@ export function useUpdateTicket() {
   const { mutate, mutateAsync, isPending, error, reset } = useMutation({
     mutationFn: updateTicket,
 
-    onSuccess: (ticket: Ticket) => {
+    onSuccess: (ticket: TicketNested) => {
       queryClient.invalidateQueries({ queryKey: ['tickets', 'all'] });
       queryClient.setQueryData(['tickets', ticket.id], ticket);
     },
@@ -72,7 +72,7 @@ export function useCreateTicket() {
   const { mutate, mutateAsync, isPending, error, reset } = useMutation({
     mutationFn: createTicket,
 
-    onSuccess: (ticket: Ticket) => {
+    onSuccess: (ticket: TicketNested) => {
       queryClient.invalidateQueries({ queryKey: ['tickets', 'all'] });
       queryClient.setQueryData(['tickets', ticket.id], ticket);
     },
@@ -91,7 +91,7 @@ export function useDeleteTicket() {
   const { mutate, mutateAsync, isPending, error, reset } = useMutation({
     mutationFn: (id: number) => deleteTicket(id),
 
-    onSuccess: (ticket: Ticket) => {
+    onSuccess: (ticket: TicketNested) => {
       queryClient.invalidateQueries({ queryKey: ['tickets', 'all'] });
       queryClient.removeQueries({ queryKey: ['ticket', ticket.id], exact: true });
     },

@@ -47,6 +47,11 @@ export const UserQuerySchema = z.object({
     .optional(),
 });
 
+export const UserEssentialsSchema = z.object({
+  id: z.number().int(),
+  username: z.string().min(5).max(32),
+});
+
 /* Constants --------------------------------- */
 
 export const USER_SORT_OPTIONS = ['firstName', 'lastName', 'username', 'createdAt'];
@@ -58,3 +63,4 @@ export type UserCreatePayload = z.infer<typeof UserCreateSchema>;
 export type UserUpdatePayload = z.infer<typeof UserUpdateSchema>;
 export type UserSortOption = z.infer<typeof userSortEnum>;
 export type UserQuery = z.infer<typeof UserQuerySchema>;
+export type UserEssential = z.infer<typeof UserEssentialsSchema>;
