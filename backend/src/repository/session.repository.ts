@@ -1,7 +1,7 @@
 import type { SessionCreatePayload, SessionQuery, SessionUpdatePayload } from '@ticketbasics/zod-schemas';
 
+import { db } from '@backend/database';
 import { sessionsTable } from '@backend/database/schema/session.schema';
-import { db } from '@backend/index';
 import { SessionCreateSchema, SessionSchema } from '@ticketbasics/zod-schemas';
 import { and, asc, between, count, desc, eq, gte, lte } from 'drizzle-orm';
 
@@ -40,7 +40,7 @@ export const SessionRepository = {
     const limit = query.limit ?? 25;
     const offset = query.offset ?? 0;
 
-    const data = await db
+    const data = await db()
       .select()
       .from(sessionsTable)
       .where(and(...conditions))
@@ -48,7 +48,7 @@ export const SessionRepository = {
       .limit(limit)
       .offset(offset);
 
-    const countResult = await db
+    const countResult = await db()
       .select({ total: count() })
       .from(sessionsTable)
       .where(and(...conditions));
@@ -66,7 +66,7 @@ export const SessionRepository = {
   },
 
   async getById(id: number) {
-    const [result] = await db
+    const [result] = await db()
       .select()
       .from(sessionsTable)
       .where(eq(sessionsTable.id, id));
@@ -79,7 +79,7 @@ export const SessionRepository = {
   },
 
   async getByTokenId(tokenId: string) {
-    const [result] = await db
+    const [result] = await db()
       .select()
       .from(sessionsTable)
       .where(eq(sessionsTable.tokenId, tokenId));
@@ -94,7 +94,7 @@ export const SessionRepository = {
   async create(session: SessionCreatePayload) {
     const validated = SessionCreateSchema.parse(session);
 
-    const [result] = await db
+    const [result] = await db()
       .insert(sessionsTable)
       .values(validated)
       .returning();
@@ -109,7 +109,7 @@ export const SessionRepository = {
   async update(id: number, data: Partial<SessionUpdatePayload>) {
     const validated = SessionSchema.partial().parse(data);
 
-    const [result] = await db
+    const [result] = await db()
       .update(sessionsTable)
       .set(validated)
       .where(eq(sessionsTable.id, id))
@@ -123,7 +123,7 @@ export const SessionRepository = {
   },
 
   async delete(id: number) {
-    const [result] = await db
+    const [result] = await db()
       .delete(sessionsTable)
       .where(eq(sessionsTable.id, id))
       .returning();

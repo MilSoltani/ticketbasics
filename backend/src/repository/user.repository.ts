@@ -1,7 +1,7 @@
 import type { SignupPayload, UserQuery, UserUpdatePayload } from '@ticketbasics/zod-schemas';
 
+import { db } from '@backend/database';
 import { usersTable } from '@backend/database/schema';
-import { db } from '@backend/index';
 import { SignupSchema, UserSchema } from '@ticketbasics/zod-schemas';
 import { and, asc, between, count, desc, eq, gte, ilike, lte } from 'drizzle-orm';
 
@@ -58,7 +58,7 @@ export const UserRepository = {
     const columnsArray = query.columns ?? [];
 
     const selected = columnsArray.length > 0
-      ? db.select(
+      ? db().select(
           columnsArray.reduce((acc, col) => {
             if (col in usersTable) {
               acc[col] = usersTable[col as keyof typeof usersTable];
@@ -66,7 +66,7 @@ export const UserRepository = {
             return acc;
           }, {} as Record<string, any>),
         )
-      : db.select();
+      : db().select();
 
     const data = await selected
       .from(usersTable)
@@ -75,7 +75,7 @@ export const UserRepository = {
       .limit(limit)
       .offset(offset);
 
-    const countResult = await db
+    const countResult = await db()
       .select({ total: count() })
       .from(usersTable)
       .where(and(...conditions));
@@ -93,7 +93,7 @@ export const UserRepository = {
   },
 
   async getById(id: number) {
-    const [result] = await db
+    const [result] = await db()
       .select()
       .from(usersTable)
       .where(eq(usersTable.id, id));
@@ -106,7 +106,7 @@ export const UserRepository = {
   },
 
   async getByUsernameForAuth(username: string) {
-    const [result] = await db
+    const [result] = await db()
       .select()
       .from(usersTable)
       .where(eq(usersTable.username, username))
@@ -122,7 +122,7 @@ export const UserRepository = {
   async create(user: SignupPayload) {
     const validated = SignupSchema.parse(user);
 
-    const [result] = await db
+    const [result] = await db()
       .insert(usersTable)
       .values(validated)
       .returning();
@@ -137,7 +137,7 @@ export const UserRepository = {
   async update(id: number, data: Partial<UserUpdatePayload>) {
     const validated = UserSchema.partial().parse(data);
 
-    const [result] = await db
+    const [result] = await db()
       .update(usersTable)
       .set(validated)
       .where(eq(usersTable.id, id))
@@ -151,7 +151,7 @@ export const UserRepository = {
   },
 
   async delete(id: number) {
-    const [result] = await db
+    const [result] = await db()
       .delete(usersTable)
       .where(eq(usersTable.id, id))
       .returning();

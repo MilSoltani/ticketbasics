@@ -1,8 +1,8 @@
 import type { TicketQuery } from '@ticketbasics/zod-schemas';
 import type { InferInsertModel } from 'drizzle-orm';
 
+import { db } from '@backend/database';
 import { ticketsTable } from '@backend/database/schema';
-import { db } from '@backend/index';
 import { TicketCreateSchema, TicketSchema } from '@ticketbasics/zod-schemas';
 import { and, asc, between, count, desc, eq, gte, ilike, inArray, lte } from 'drizzle-orm';
 import z from 'zod';
@@ -58,7 +58,7 @@ export const TicketRepository = {
     const columnsArray = query.columns ?? [];
 
     const selected = columnsArray.length > 0
-      ? db.select(
+      ? db().select(
           columnsArray.reduce((acc, col) => {
             if (col in ticketsTable) {
               acc[col] = ticketsTable[col as keyof typeof ticketsTable];
@@ -66,7 +66,7 @@ export const TicketRepository = {
             return acc;
           }, {} as Record<string, any>),
         )
-      : db.select();
+      : db().select();
 
     const data = await selected
       .from(ticketsTable)
@@ -75,7 +75,7 @@ export const TicketRepository = {
       .limit(limit)
       .offset(offset);
 
-    const countResult = await db
+    const countResult = await db()
       .select({ total: count() })
       .from(ticketsTable)
       .where(and(...conditions));
@@ -93,7 +93,7 @@ export const TicketRepository = {
   },
 
   async getById(id: number) {
-    const [result] = await db
+    const [result] = await db()
       .select()
       .from(ticketsTable)
       .where(eq(ticketsTable.id, id));
@@ -110,7 +110,7 @@ export const TicketRepository = {
       creatorId: z.number().int(),
     }).parse(ticket);
 
-    const [result] = await db
+    const [result] = await db()
       .insert(ticketsTable)
       .values(validated)
       .returning();
@@ -125,7 +125,7 @@ export const TicketRepository = {
   async update(id: number, data: Partial<InsertTicket>) {
     const validated = TicketSchema.partial().parse(data);
 
-    const [result] = await db
+    const [result] = await db()
       .update(ticketsTable)
       .set(validated)
       .where(eq(ticketsTable.id, id))
@@ -139,7 +139,7 @@ export const TicketRepository = {
   },
 
   async delete(id: number) {
-    const [result] = await db
+    const [result] = await db()
       .delete(ticketsTable)
       .where(eq(ticketsTable.id, id))
       .returning();
